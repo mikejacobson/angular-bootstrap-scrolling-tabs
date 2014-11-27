@@ -1,5 +1,5 @@
-AngularBootstrapScrollingTabs
-=============================
+angular-bootstrap-scrolling-tabs
+================================
 
 Angular directive for making Bootstrap 3 Tabs scroll horizontally. It works in modern browsers, plus IE8.
 
