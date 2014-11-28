@@ -36,7 +36,7 @@ So if your `nav-tabs` markup looks like this (it assumes your tabs are data-driv
   <!-- Nav tabs -->
   <ul class="nav nav-tabs" role="tablist">
     <li ng-class="{ 'active': tab.isActive }" ng-repeat="tab in main.tabs">
-      <a ng-href="{{'#' + tab.paneId}}" role="tab" data-toggle="tab">{{tab.label}}</a>
+      <a ng-href="{{'#' + tab.paneId}}" role="tab" data-toggle="tab" ng-bind-html="sanitize(tab.label)"></a>
     </li>
   </ul>
 
@@ -67,14 +67,14 @@ you could replace the `nav-tabs` with the `<scrolling-tabs />` directive, like s
 ```
 
 
-The directive requires a `tabs` attribute, which must be set to an array of objects like this:
+The directive requires a `tabs` attribute, which must be set to an array of objects like this (note that the tab labels can contain HTML):
 ```javascript
 var tabs = [
-  { paneId: 'tab01', label: 'Tab 1 of 5', isActive: true },
-  { paneId: 'tab02', label: 'Tab 2 of 5', isActive: false },
-  { paneId: 'tab03', label: 'Tab 3 of 5', isActive: false },
-  { paneId: 'tab04', label: 'Tab 4 of 5', isActive: false },
-  { paneId: 'tab05', label: 'Tab 5 of 5', isActive: false }
+  { paneId: 'tab01', label: 'Tab <strong>1</strong> of 5', isActive: true },
+  { paneId: 'tab02', label: 'Tab <strong>2</strong> of 5', isActive: false },
+  { paneId: 'tab03', label: 'Tab <strong>3</strong> of 5', isActive: false },
+  { paneId: 'tab04', label: 'Tab <strong>4</strong> of 5', isActive: false },
+  { paneId: 'tab05', label: 'Tab <strong>5</strong> of 5', isActive: false }
 ];
 
 ```

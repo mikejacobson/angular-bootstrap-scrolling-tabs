@@ -19,7 +19,7 @@
     '     <div class="scrtabs-tabs-movable-container">',
     '       <ul class="nav nav-tabs" role="tablist">',
     '         <li ng-class="{ \'active\': tabObj[propActive || \'isActive\'] }" data-tab-obj="{{tabObj}}" data-index="{{$index}}" ng-repeat="tabObj in tabsArr">',
-    '           <a ng-href="{{\'#\' + tabObj[propPaneId || \'paneId\']}}" role="tab" data-toggle="tab">{{tabObj[propLabel || \'label\']}}</a>',
+    '           <a ng-href="{{\'#\' + tabObj[propPaneId || \'paneId\']}}" role="tab" data-toggle="tab" ng-bind-html="sanitize(tabObj[propLabel || \'label\']);"></a>',
     '         </li>',
     '       </ul>',
     '     </div>',
@@ -57,7 +57,7 @@
 
 
 
-  function scrollingTabsDirective($timeout) {
+  function scrollingTabsDirective($timeout, $sce) {
     var $fixedContainer,
         $leftScrollArrow,
         $movableContainer,
@@ -73,12 +73,17 @@
         fixedContainerWidth,
         movableContainerLeftPos = 0,
         movableContainerWidth,
+        sanitize,
         scrollArrowsCombinedWidth,
         scrollArrowsVisible = true,
         scrollMovement,
         scrollOffsetFraction = CONSTANTS.SCROLL_OFFSET_FRACTION,
         winWidth;
 
+
+    sanitize = function (html) {
+        return $sce.trustAsHtml(html);
+    };
 
     // --------------- Scroll Movement ---------------------
     scrollMovement = (function() {
@@ -369,7 +374,7 @@
           movableContainerWidth += $(this).outerWidth();
         });
 
-        $movableContainer.width(movableContainerWidth);
+        $movableContainer.width(movableContainerWidth += 1);
       }
 
       function _setScrollArrowVisibility() {
@@ -431,6 +436,7 @@
         scope.propPaneId = scope.propPaneId || 'paneId';
         scope.propLabel = scope.propLabel || 'label';
         scope.propActive = scope.propActive || 'isActive';
+        scope.sanitize = sanitize;
 
         $el.on('click.scrollingTabs', '.nav-tabs > li', function __handleClickOnTab(e) {
           var clickedTabElData = $(this).data();
@@ -450,7 +456,7 @@
 
 
 
-  scrollingTabsDirective.$inject = ['$timeout'];
+  scrollingTabsDirective.$inject = ['$timeout', '$sce'];
 
   scrollingTabsModule.directive('scrollingTabs', scrollingTabsDirective);
 
