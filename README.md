@@ -17,7 +17,7 @@ Demo
 ----
 <a href="http://jsfiddle.net/mikejacobson/f2kxr5jL/embedded/result/" target="_blank">Here's a fiddle</a> showing it in action.
 
-And <a href="http://jsfiddle.net/mikejacobson/f2kxr5jL/" target="_blank">here's the fiddle</a> with the code, so you can see how to integrate it into a page.
+And <a href="http://jsfiddle.net/mikejacobson/f2kxr5jL/" target="_blank">here's the fiddle</a> with the code, so you can see how to integrate it into a page. (Note that this fiddle doesn't work in IE8.)
 
 
 
@@ -36,13 +36,14 @@ So if your `nav-tabs` markup looks like this (it assumes your tabs are data-driv
   <!-- Nav tabs -->
   <ul class="nav nav-tabs" role="tablist">
     <li ng-class="{ 'active': tab.isActive }" ng-repeat="tab in main.tabs">
-      <a ng-href="{{'#' + tab.id}}" role="tab" data-toggle="tab">{{tab.title}}</a>
+      <a ng-href="{{'#' + tab.paneId}}" role="tab" data-toggle="tab">{{tab.label}}</a>
     </li>
   </ul>
 
   <!-- Tab panes -->
   <div class="tab-content">
-    <div class="tab-pane" ng-class="{ 'active': tab.isActive }" id="{{tab.id}}" ng-repeat="tab in main.tabs">{{tab.htmlContent}}</div>
+    <div class="tab-pane" ng-class="{ 'active': tab.isActive }" id="{{tab.paneId}}"
+                                    ng-repeat="tab in main.tabs">{{tab.paneContent}}</div>
   </div>
 
 </div>
@@ -53,39 +54,45 @@ you could replace the `nav-tabs` with the `<scrolling-tabs />` directive, like s
 <div class="scrolling-tabs-container" ng-controller="MainCtrl as main">
 
   <!-- Scrolling Nav tabs -->
-  <scrolling-tabs tabs="{{main.tabs}}" tab-click="main.handleClickOnTab($event, $index, tab);"></scrolling-tabs>
+  <scrolling-tabs tabs="{{main.tabs}}" prop-pane-id="paneId" prop-label="label" prop-active="isActive"
+                              tab-click="main.handleClickOnTab($event, $index, tab);"></scrolling-tabs>
 
   <!-- Tab panes -->
   <div class="tab-content">
-    <div class="tab-pane" ng-class="{ 'active': tab.isActive }" id="{{tab.id}}" ng-repeat="tab in main.tabs">{{tab.htmlContent}}</div>
+    <div class="tab-pane" ng-class="{ 'active': tab.isActive }" id="{{tab.paneId}}"
+                                                ng-repeat="tab in main.tabs">{{tab.paneContent}}</div>
   </div>
 
 </div>
 ```
 
 
-The directive requires a `tabs` attribute, which must be an array of objects like this:
+The directive requires a `tabs` attribute, which must be set to an array of objects like this:
 ```javascript
 var tabs = [
-  { id: 'tab01', title: 'Tab 1 of 5', isActive: true },
-  { id: 'tab02', title: 'Tab 2 of 5', isActive: false },
-  { id: 'tab03', title: 'Tab 3 of 5', isActive: false },
-  { id: 'tab04', title: 'Tab 4 of 5', isActive: false },
-  { id: 'tab05', title: 'Tab 5 of 5', isActive: false }
+  { paneId: 'tab01', label: 'Tab 1 of 5', isActive: true },
+  { paneId: 'tab02', label: 'Tab 2 of 5', isActive: false },
+  { paneId: 'tab03', label: 'Tab 3 of 5', isActive: false },
+  { paneId: 'tab04', label: 'Tab 4 of 5', isActive: false },
+  { paneId: 'tab05', label: 'Tab 5 of 5', isActive: false }
 ];
 
 ```
 
-The code as-is requires that each `tab` object in that array have the following properties:
+Each object must have a property for its label, a property for the ID of its target pane (so its href property can be set), and a boolean property indicating whether it's active or not.
 
-| Property | Description |
-| -------- | ----------- |
-| id       | The id of the tab's content section; the tab's `href` attribute gets set to this id preceded by a `#` |
-| title    | The text that will display in the tab |
-| isActive | Boolean indicating if the tab is the active tab |
+By default, the directive assumes those properties will be named `label`, `paneId`, and `isActive`, but if you want to use different property names, you can pass them in as attributes on the directive element:
 
 
-But, of course, the code can be tweaked to accommodate other object definitions.
+| Property | Default Property Name | Optional Attribute for Custom Property Name |
+| -------- | ------------ | ----------------------- |
+| Label    | label | prop-label |
+| Target Pane ID | paneId | prop-pane-id |
+| Active | isActive | prop-active |
+
+
+So, for example, if your tab objects used the property name `title` for their labels, you would add attribute `prop-label="title"` to the `<scrolling-tabs>` element.
+
 
 An optional `tab-click` attribute can also be added to the directive. That function will be called when a tab is clicked. It can be configured to accept the Angular `$event` and `$index` arguments, as well as the `tab` object that was clicked (which must be assigned the parameter name `tab`).
 

@@ -7,7 +7,6 @@
                                                 // make mousedown continous scrolling faster
     SCROLL_OFFSET_FRACTION: 6, // each click moves the container this fraction of the fixed container--decrease 
                                // to make the tabs scroll farther per click
-    SCROLL_ARROW_WIDTH: 20, // total element width, including padding and border
     DATA_KEY_IS_MOUSEDOWN: 'ismousedown'
   },
 
@@ -19,8 +18,8 @@
     '   <div class="scrtabs-tabs-fixed-container">',
     '     <div class="scrtabs-tabs-movable-container">',
     '       <ul class="nav nav-tabs" role="tablist">',
-    '         <li ng-class="{ \'active\': tabObj.isActive }" data-tab-obj="{{tabObj}}" data-index="{{$index}}" ng-repeat="tabObj in tabsArr">',
-    '           <a ng-href="{{\'#\' + tabObj.id}}" role="tab" data-toggle="tab">{{tabObj.title}}</a>',
+    '         <li ng-class="{ \'active\': tabObj[propActive || \'isActive\'] }" data-tab-obj="{{tabObj}}" data-index="{{$index}}" ng-repeat="tabObj in tabsArr">',
+    '           <a ng-href="{{\'#\' + tabObj[propPaneId || \'paneId\']}}" role="tab" data-toggle="tab">{{tabObj[propLabel || \'label\']}}</a>',
     '         </li>',
     '       </ul>',
     '     </div>',
@@ -74,9 +73,8 @@
         fixedContainerWidth,
         movableContainerLeftPos = 0,
         movableContainerWidth,
-        scrollArrowsCombinedWidth = CONSTANTS.SCROLL_ARROW_WIDTH * 2,
+        scrollArrowsCombinedWidth,
         scrollArrowsVisible = true,
-        scrollArrowWidth = CONSTANTS.SCROLL_ARROW_WIDTH,
         scrollMovement,
         scrollOffsetFraction = CONSTANTS.SCROLL_OFFSET_FRACTION,
         winWidth;
@@ -158,7 +156,7 @@
           return;
         }
 
-        activeTabWidth = $activeTab.width();
+        activeTabWidth = $activeTab.outerWidth();
         activeTabLeftPos = $activeTab.offset().left;
 
         rightArrowLeftPos = $rightScrollArrow.offset().left;
@@ -327,8 +325,10 @@
       }
 
       function _setElementWidths() {
-        containerWidth = $tabsContainer.width();
+        containerWidth = $tabsContainer.outerWidth();
         winWidth = $win.width();
+
+        scrollArrowsCombinedWidth = $leftScrollArrow.outerWidth() + $rightScrollArrow.outerWidth();
 
         _setFixedContainerWidth();
         _setMovableContainerWidth();
@@ -351,7 +351,7 @@
       }
 
       function _setFixedContainerWidth() {
-        $fixedContainer.width(fixedContainerWidth = $tabsContainer.width());
+        $fixedContainer.width(fixedContainerWidth = $tabsContainer.outerWidth());
       }
 
       function _setFixedContainerWidthForJustHiddenScrollArrows() {
@@ -366,7 +366,7 @@
         movableContainerWidth = 0;
 
         $tabsUl.find('li').each(function __getLiWidth() {
-          movableContainerWidth += $(this).width();
+          movableContainerWidth += $(this).outerWidth();
         });
 
         $movableContainer.width(movableContainerWidth);
@@ -420,11 +420,17 @@
       replace: true,
       scope: {
         tabs: '@',
+        propPaneId: '@',
+        propLabel: '@',
+        propActive: '@',
         localTabClick: '&tabClick'
       },
       link: function(scope, $el, attrs) {
 
         scope.tabsArr = scope.$eval(scope.tabs);
+        scope.propPaneId = scope.propPaneId || 'paneId';
+        scope.propLabel = scope.propLabel || 'label';
+        scope.propActive = scope.propActive || 'isActive';
 
         $el.on('click.scrollingTabs', '.nav-tabs > li', function __handleClickOnTab(e) {
           var clickedTabElData = $(this).data();
