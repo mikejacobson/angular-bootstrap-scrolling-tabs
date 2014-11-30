@@ -3,6 +3,9 @@ angular-bootstrap-scrolling-tabs
 
 Angular directive for making Bootstrap 3 Tabs scroll horizontally. It works in modern browsers, plus IE8.
 
+<a href="http://plnkr.co/edit/YhKiIhuAPkpAyacu6tuk" target="_blank">Here's a plunk</a>.
+
+
 
 Usage
 -----
@@ -10,14 +13,6 @@ Usage
 2. Include `scrolling-tabs.min.css` (or `scrolling-tabs.css`) on your page *after* Bootstrap's CSS
 3. Include `scrolling-tabs.min.js` (or `scrolling-tabs.js`) on your page
 4. Add `mj.scrollingTabs` as a module dependency to your app: `angular.module('myapp', ['mj.scrollingTabs']);`
-
-
-
-Demo
-----
-<a href="http://jsfiddle.net/mikejacobson/f2kxr5jL/embedded/result/" target="_blank">Here's a fiddle</a> showing it in action.
-
-And <a href="http://jsfiddle.net/mikejacobson/f2kxr5jL/" target="_blank">here's the fiddle</a> with the code, so you can see how to integrate it into a page. (Note that this fiddle doesn't work in IE8.)
 
 
 
