@@ -1,9 +1,18 @@
 angular-bootstrap-scrolling-tabs
 ================================
 
-Angular directive for making Bootstrap 3 Tabs scroll horizontally. It works in modern browsers, plus IE8.
+Angular directives for making Bootstrap 3 Tabs or AngularUI Bootstrap Tabs scroll horizontally rather than wrap.
 
-<a href="http://plnkr.co/edit/YhKiIhuAPkpAyacu6tuk" target="_blank">Here's a plunk</a>.
+Here are plunks showing them working with:
+
+<a href="http://plnkr.co/edit/YhKiIhuAPkpAyacu6tuk?p=preview" target="_blank">Bootstrap 3 Tabs</a>
+
+<a href="http://plnkr.co/edit/lWeQxxecKPudK7xlQxS3?p=preview" target="_blank">AngularUI Bootstrap Tabs</a>
+
+There are two directives to choose from, and three ways to use them:
+* [Option 1: Replace Standard Bootstrap Tabs](#opt1)
+* [Option 2: Wrap Standard Bootstrap Tabs](#opt2)
+* [Option 3: Wrap AngularUI Bootstrap Tabs](#opt3)
 
 
 
@@ -19,77 +28,140 @@ Usage
 
 Overview
 --------
-If you're using Bootstrap `nav-tabs` (and Angular, of course) and you don't want them to wrap if the page is too narrow to accommodate them all in one row, you can use this Angular directive to keep them in a row that scrolls horizontally.
+If you're using Bootstrap Tabs (`nav-tabs`), and Angular, of course, or AngularUI Bootstrap Tabs (`tabset`) and you don't want them to wrap if the page is too narrow to accommodate them all in one row, you can use these Angular directives to keep them in a row that scrolls horizontally.
 
 It adjusts itself on window resize (debounced to prevent resize event wackiness), so if the window is widened enough to accommodate all tabs, scrolling will deactivate and the scroll arrows will disappear. (And, of course, vice versa if the window is narrowed.)
 
+There are two directives to choose from, depending on your application:
 
-So if your `nav-tabs` markup looks like this (it assumes your tabs are data-driven and you're using `ng-repeat` to generate them rather than having them hardcoded in the markup since this is for a scenario in which you might have many tabs):
+`scrolling-tabs` is an element directive that *replaces* your standard Bootstrap `ul.nav-tabs` element.
+
+`scrolling-tabs-wrapper` is an attribute directive that *wraps* either a standard Bootstrap `ul.nav-tabs` element or an Angular UI Bootstrap `tabset` element.
+
+
+Option 1: Replace Standard Bootstrap Tabs <a id="opt1"></a>
+-----------------------------------------
+
+If your `nav-tabs` markup looks like this (it assumes your tabs are data-driven and you're using `ng-repeat` to generate them):
 ```html
 <div class="scrolling-tabs-container" ng-controller="MainCtrl as main">
 
   <!-- Nav tabs -->
   <ul class="nav nav-tabs" role="tablist">
-    <li ng-class="{ 'active': tab.isActive }" ng-repeat="tab in main.tabs">
-      <a ng-href="{{'#' + tab.paneId}}" role="tab" data-toggle="tab" ng-bind-html="sanitize(tab.label)"></a>
+    <li ng-class="{ 'active': tab.active, 'disabled': tab.disabled }" ng-repeat="tab in main.tabs">
+      <a ng-href="{{'#' + tab.paneId}}" role="tab" data-toggle="tab" ng-bind-html="sanitize(tab.title)"></a>
     </li>
   </ul>
 
   <!-- Tab panes -->
   <div class="tab-content">
-    <div class="tab-pane" ng-class="{ 'active': tab.isActive }" id="{{tab.paneId}}"
-                                    ng-repeat="tab in main.tabs">{{tab.paneContent}}</div>
+    <div class="tab-pane" ng-class="{ 'active': tab.active }" id="{{tab.paneId}}"
+                                    ng-repeat="tab in main.tabs">{{tab.content}}</div>
   </div>
 
 </div>
 ```
 
-you could replace the `nav-tabs` with the `<scrolling-tabs />` directive, like so:
+you can replace the `ul.nav-tabs` element with the `scrolling-tabs` element directive, like so:
 ```html
 <div class="scrolling-tabs-container" ng-controller="MainCtrl as main">
 
   <!-- Scrolling Nav tabs -->
-  <scrolling-tabs tabs="{{main.tabs}}" prop-pane-id="paneId" prop-label="label" prop-active="isActive"
-                              tab-click="main.handleClickOnTab($event, $index, tab);"></scrolling-tabs>
+  <scrolling-tabs tabs="{{main.tabs}}"
+                  prop-pane-id="paneId"
+                  prop-title="title"
+                  prop-active="active"
+                  prop-disabled="disabled"
+                  tab-click="main.handleClickOnTab($event, $index, tab);">
+  </scrolling-tabs>
 
   <!-- Tab panes -->
   <div class="tab-content">
-    <div class="tab-pane" ng-class="{ 'active': tab.isActive }" id="{{tab.paneId}}"
-                                                ng-repeat="tab in main.tabs">{{tab.paneContent}}</div>
+    <div class="tab-pane" ng-class="{ 'active': tab.active }" id="{{tab.paneId}}"
+                                    ng-repeat="tab in main.tabs">{{tab.content}}</div>
   </div>
 
 </div>
 ```
 
 
-The directive requires a `tabs` attribute, which must be set to an array of objects like this (note that the tab labels can contain HTML):
+The directive requires a `tabs` attribute, which must be set to an array of objects like this (note that the tab titles can contain HTML):
 ```javascript
 var tabs = [
-  { paneId: 'tab01', label: 'Tab <strong>1</strong> of 5', isActive: true },
-  { paneId: 'tab02', label: 'Tab <strong>2</strong> of 5', isActive: false },
-  { paneId: 'tab03', label: 'Tab <strong>3</strong> of 5', isActive: false },
-  { paneId: 'tab04', label: 'Tab <strong>4</strong> of 5', isActive: false },
-  { paneId: 'tab05', label: 'Tab <strong>5</strong> of 5', isActive: false }
+  { paneId: 'tab01', title: 'Tab <em>1</em> of 12', content: 'Tab Number 1 Content', active: true, disabled: false },
+  { paneId: 'tab02', title: 'Tab 2 of 12', content: 'Tab Number 2 Content', active: false, disabled: false },
+  { paneId: 'tab03', title: 'Tab 3 of 12', content: 'Tab Number 3 Content', active: false, disabled: false },
+  { paneId: 'tab04', title: 'Tab 4 of 12', content: 'Tab Number 4 Content', active: false, disabled: false },
+  { paneId: 'tab05', title: 'Tab 5 of 12', content: 'Tab Number 5 Content', active: false, disabled: false }
 ];
 
 ```
 
-Each object must have a property for its label, a property for the ID of its target pane (so its href property can be set), and a boolean property indicating whether it's active or not.
+Each object must have a property for the tab title, a property for the ID of its target pane (so its href property can be set), and boolean properties for active and disabled.
 
-By default, the directive assumes those properties will be named `label`, `paneId`, and `isActive`, but if you want to use different property names, you can pass them in as attributes on the directive element:
+By default, the directive assumes those properties will be named `title`, `paneId`, `active`, and `disabled`, but if you want to use different property names, you can pass them in as attributes on the directive element:
 
 
 | Property | Default Property Name | Optional Attribute for Custom Property Name |
 | -------- | ------------ | ----------------------- |
-| Label    | label | prop-label |
+| Title    | title | prop-title |
 | Target Pane ID | paneId | prop-pane-id |
-| Active | isActive | prop-active |
+| Active | active | prop-active |
+| Disabled | disabled | prop-disabled |
 
 
-So, for example, if your tab objects used the property name `title` for their labels, you would add attribute `prop-label="title"` to the `<scrolling-tabs>` element.
+So, for example, if your tab objects used the property name `tabLabel` for their titles, you would add attribute `prop-title="tabLabel"` to the `<scrolling-tabs>` element.
 
 
 An optional `tab-click` attribute can also be added to the directive. That function will be called when a tab is clicked. It can be configured to accept the Angular `$event` and `$index` arguments, as well as the `tab` object that was clicked (which must be assigned the parameter name `tab`).
+
+
+
+Option 2: Wrap Standard Bootstrap Tabs <a id="opt2"></a>
+--------------------------------------
+
+If you would prefer to keep your standard Bootstrap `ul.nav-tabs` markup and just want to make it scrollable, you can wrap it in a `div` that has the `scrolling-tabs-wrapper` attribute directive on it:
+
+```html
+  <!-- wrap nav-tabs ul in a div with scrolling-tabs-wrapper directive on it -->
+  <div scrolling-tabs-wrapper>
+  
+    <!-- Standard Bootstrap ul.nav-tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+      <li ng-class="{ 'active': tab.active, 'disabled': tab.disabled }" ng-repeat="tab in main.uc2Tabs">
+        <a ng-href="{{'#' + tab.paneId}}" role="tab" data-toggle="tab">{{tab.title}}</a>
+      </li>
+    </ul>
+    
+  </div>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div class="tab-pane" ng-class="{ 'active': tab.active }" id="{{tab.paneId}}"
+                                        ng-repeat="tab in main.tabs">{{tab.content}}</div>
+  </div>
+```
+
+
+
+Option 3: Wrap AngularUI Bootstrap Tabs <a id="opt3"></a>
+---------------------------------------
+
+Similarly, if you're using AngularUI Bootstrap Tabs, you can make them scrollable by wrapping the `tabset` element in a `div` that has the `scrolling-tabs-wrapper` attribute directive on it:
+
+```html
+  <!-- wrap tabset in a div with scrolling-tabs-wrapper directive on it -->
+<div scrolling-tabs-wrapper>
+
+  <tabset>
+    <tab ng-repeat="tab in main.tabs" heading="{{tab.title}}" active="tab.active" disabled="tab.disabled">
+      {{tab.content}}
+    </tab>
+  </tabset>
+
+</div>
+```
+
 
 
 
