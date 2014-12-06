@@ -36,7 +36,7 @@ There are two directives to choose from, depending on your application:
 
 `scrolling-tabs` is an element directive that *replaces* your standard Bootstrap `ul.nav-tabs` element.
 
-`scrolling-tabs-wrapper` is an attribute directive that *wraps* either a standard Bootstrap `ul.nav-tabs` element or an Angular UI Bootstrap `tabset` element.
+`scrolling-tabs-wrapper` is an attribute directive that *wraps* either a standard Bootstrap `ul.nav-tabs` element or an AngularUI Bootstrap `tabset` element.
 
 
 <a id="opt1"></a>Option 1: Replace Standard Bootstrap Tabs
@@ -128,7 +128,7 @@ If you would prefer to keep your standard Bootstrap `ul.nav-tabs` markup and jus
   
     <!-- Standard Bootstrap ul.nav-tabs -->
     <ul class="nav nav-tabs" role="tablist">
-      <li ng-class="{ 'active': tab.active, 'disabled': tab.disabled }" ng-repeat="tab in main.uc2Tabs">
+      <li ng-class="{ 'active': tab.active, 'disabled': tab.disabled }" ng-repeat="tab in main.tabs">
         <a ng-href="{{'#' + tab.paneId}}" role="tab" data-toggle="tab">{{tab.title}}</a>
       </li>
     </ul>
