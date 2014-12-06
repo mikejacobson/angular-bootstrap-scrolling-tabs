@@ -28,7 +28,7 @@ Usage
 
 Overview
 --------
-If you're using Bootstrap Tabs (`nav-tabs`), and Angular, of course, or AngularUI Bootstrap Tabs (`tabset`) and you don't want them to wrap if the page is too narrow to accommodate them all in one row, you can use these Angular directives to keep them in a row that scrolls horizontally.
+If you're using Bootstrap Tabs (`nav-tabs`) or AngularUI Bootstrap Tabs (`tabset`) and you don't want them to wrap if the page is too narrow to accommodate them all in one row, you can use these Angular directives to keep them in a row that scrolls horizontally.
 
 It adjusts itself on window resize (debounced to prevent resize event wackiness), so if the window is widened enough to accommodate all tabs, scrolling will deactivate and the scroll arrows will disappear. (And, of course, vice versa if the window is narrowed.)
 
@@ -39,7 +39,7 @@ There are two directives to choose from, depending on your application:
 `scrolling-tabs-wrapper` is an attribute directive that *wraps* either a standard Bootstrap `ul.nav-tabs` element or an Angular UI Bootstrap `tabset` element.
 
 
-Option 1: Replace Standard Bootstrap Tabs <a id="opt1"></a>
+<a id="opt1"></a>Option 1: Replace Standard Bootstrap Tabs
 -----------------------------------------
 
 If your `nav-tabs` markup looks like this (it assumes your tabs are data-driven and you're using `ng-repeat` to generate them):
@@ -49,7 +49,7 @@ If your `nav-tabs` markup looks like this (it assumes your tabs are data-driven 
   <!-- Nav tabs -->
   <ul class="nav nav-tabs" role="tablist">
     <li ng-class="{ 'active': tab.active, 'disabled': tab.disabled }" ng-repeat="tab in main.tabs">
-      <a ng-href="{{'#' + tab.paneId}}" role="tab" data-toggle="tab" ng-bind-html="sanitize(tab.title)"></a>
+      <a ng-href="{{'#' + tab.paneId}}" role="tab" data-toggle="tab">{{tab.title}}</a>
     </li>
   </ul>
 
@@ -85,7 +85,7 @@ you can replace the `ul.nav-tabs` element with the `scrolling-tabs` element dire
 ```
 
 
-The directive requires a `tabs` attribute, which must be set to an array of objects like this (note that the tab titles can contain HTML):
+The only attribute the directive requires is a `tabs` attribute&mdash;the others are all optional, depending on your setup&mdash;which must be set to an array of objects like this (note that the tab titles can contain HTML):
 ```javascript
 var tabs = [
   { paneId: 'tab01', title: 'Tab <em>1</em> of 12', content: 'Tab Number 1 Content', active: true, disabled: false },
@@ -97,7 +97,7 @@ var tabs = [
 
 ```
 
-Each object must have a property for the tab title, a property for the ID of its target pane (so its href property can be set), and boolean properties for active and disabled.
+Each object must have a property for the tab title, a property for the ID of its target pane (so its href property can be set), and a boolean property for its active state; optionally, it can also have a boolean for its disabled state.
 
 By default, the directive assumes those properties will be named `title`, `paneId`, `active`, and `disabled`, but if you want to use different property names, you can pass them in as attributes on the directive element:
 
@@ -117,7 +117,7 @@ An optional `tab-click` attribute can also be added to the directive. That funct
 
 
 
-Option 2: Wrap Standard Bootstrap Tabs <a id="opt2"></a>
+<a id="opt2"></a>Option 2: Wrap Standard Bootstrap Tabs
 --------------------------------------
 
 If you would prefer to keep your standard Bootstrap `ul.nav-tabs` markup and just want to make it scrollable, you can wrap it in a `div` that has the `scrolling-tabs-wrapper` attribute directive on it:
@@ -144,7 +144,7 @@ If you would prefer to keep your standard Bootstrap `ul.nav-tabs` markup and jus
 
 
 
-Option 3: Wrap AngularUI Bootstrap Tabs <a id="opt3"></a>
+<a id="opt3"></a>Option 3: Wrap AngularUI Bootstrap Tabs
 ---------------------------------------
 
 Similarly, if you're using AngularUI Bootstrap Tabs, you can make them scrollable by wrapping the `tabset` element in a `div` that has the `scrolling-tabs-wrapper` attribute directive on it:
