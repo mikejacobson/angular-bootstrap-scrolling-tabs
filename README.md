@@ -5,9 +5,8 @@ Angular directives for making Bootstrap 3 Tabs or AngularUI Bootstrap Tabs scrol
 
 Here are plunks showing them working with:
 
-<a href="http://plnkr.co/edit/YhKiIhuAPkpAyacu6tuk?p=preview" target="_blank">Bootstrap 3 Tabs</a>
-
-<a href="http://plnkr.co/edit/lWeQxxecKPudK7xlQxS3?p=preview" target="_blank">AngularUI Bootstrap Tabs</a>
+* <a href="http://plnkr.co/edit/YhKiIhuAPkpAyacu6tuk?p=preview" target="_blank">Bootstrap 3 Tabs</a>
+* <a href="http://plnkr.co/edit/lWeQxxecKPudK7xlQxS3?p=preview" target="_blank">AngularUI Bootstrap Tabs</a>
 
 There are two directives to choose from, and three ways to use them:
 * [Option 1: Replace Standard Bootstrap Tabs](#opt1)
