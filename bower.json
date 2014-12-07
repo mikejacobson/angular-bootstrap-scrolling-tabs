@@ -1,6 +1,6 @@
 {
   "name": "angular-bootstrap-scrolling-tabs",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "main": [
     "scrolling-tabs.js",
     "scrolling-tabs.css"
@@ -17,7 +17,8 @@
     ".gitignore",
     "bower.json",
     "README.md",
-    "*.scss"
+    "*.scss",
+    "config.rb"
   ],
   "dependencies": {
     "bootstrap": "~3.1.1",

@@ -39,6 +39,9 @@ $background-color-bootstrap-gray-hover: rgb(238, 238, 238);
   }
 }
 
-.scrtabs-tab-container .nav-tabs > li {
-  white-space: nowrap;
+.scrtabs-tabs-fixed-container ul.nav-tabs {
+  height: $tabs-height - 1;
+  > li {
+    white-space: nowrap;    
+  }
 }
