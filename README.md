@@ -3,7 +3,12 @@ angular-bootstrap-scrolling-tabs
 
 Angular directives for making Bootstrap 3 Tabs or AngularUI Bootstrap Tabs scroll horizontally rather than wrap.
 
-Here are plunks showing them working with:
+Here's what they look like:
+
+![](https://raw.githubusercontent.com/mikejacobson/angular-bootstrap-scrolling-tabs/master/st-screenshot1.png)
+
+
+And here are plunks showing them working with:
 
 * <a href="http://plnkr.co/edit/YhKiIhuAPkpAyacu6tuk?p=preview" target="_blank">Bootstrap 3 Tabs</a>
 * <a href="http://plnkr.co/edit/lWeQxxecKPudK7xlQxS3?p=preview" target="_blank">AngularUI Bootstrap Tabs</a>
