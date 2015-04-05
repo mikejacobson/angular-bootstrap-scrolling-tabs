@@ -1,7 +1,7 @@
 angular-bootstrap-scrolling-tabs
 ================================
 
-Angular directives for making Bootstrap 3 Tabs or AngularUI Bootstrap Tabs scroll horizontally rather than wrap.
+Angular directives for making Bootstrap 3 Tabs or AngularUI Bootstrap Tabs scroll horizontally rather than wrap. (Note that jQuery is required, not just JQLite.)
 
 Here's what they look like:
 
