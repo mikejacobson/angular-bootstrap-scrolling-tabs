@@ -22,7 +22,7 @@ There are two directives to choose from, and three ways to use them:
 
 Usage
 -----
-1. Download it or install it using bower: `bower install angular-bootstrap-scrolling-tabs`
+1. Download it or install it using bower: `bower install angular-bootstrap-scrolling-tabs` or npm: `npm install angular-bootstrap-scrolling-tabs`
 2. Include `scrolling-tabs.min.css` (or `scrolling-tabs.css`) on your page *after* Bootstrap's CSS
 3. Include `scrolling-tabs.min.js` (or `scrolling-tabs.js`) on your page
 4. Add `mj.scrollingTabs` as a module dependency to your app: `angular.module('myapp', ['mj.scrollingTabs']);`
