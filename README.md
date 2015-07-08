@@ -10,8 +10,9 @@ Here's what they look like:
 
 And here are plunks showing them working with:
 
-* <a href="http://plnkr.co/edit/YhKiIhuAPkpAyacu6tuk?p=preview" target="_blank">Bootstrap 3 Tabs</a>
-* <a href="http://plnkr.co/edit/lWeQxxecKPudK7xlQxS3?p=preview" target="_blank">AngularUI Bootstrap Tabs</a>
+* <a href="http://plnkr.co/edit/rN00h68xVv1w2BLGvF23?p=preview" target="_blank">Bootstrap 3 Tabs</a>
+* <a href="http://plnkr.co/edit/JgDbtyGhZAIyfA0XoK28?p=preview" target="_blank">AngularUI Bootstrap Tabs</a>
+* <a href="http://plnkr.co/edit/DKoQ71IvWvJcp30N217i?p=preview" target="_blank">AngularUI Bootstrap Tabs with tabs added dynamically after page load</a>
 
 There are two directives to choose from, and three ways to use them:
 * [Option 1: Replace Standard Bootstrap Tabs](#opt1)
@@ -166,6 +167,14 @@ Similarly, if you're using AngularUI Bootstrap Tabs, you can make them scrollabl
 </div>
 ```
 
+If the `tabs` array is going to change after page load (e.g., if the tabs get added via button click), just add attribute `watch-tabs` to the `scrolling-tabs-wrapper` directive element and set the attribute's value to the `tabs` array:
+
+```html
+<div scrolling-tabs-wrapper watch-tabs="main.tabs">
+```
+
+This will create a `$watch` on the array that triggers the directive to refresh itself if the array changes.
+  
 
 
 

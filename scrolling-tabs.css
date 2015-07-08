@@ -48,3 +48,8 @@
 .scrtabs-tabs-fixed-container ul.nav-tabs > li {
   white-space: nowrap;
 }
+
+/* line 49, scrolling-tabs.scss */
+.scrtabs-tab-content-hidden {
+  display: none;
+}

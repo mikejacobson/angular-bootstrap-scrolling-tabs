@@ -164,24 +164,64 @@
   
   // prototype methods
   (function (p) {
-      p.initElements = function (isWrapperDirective) {
+      p.initElements = function (options) {
         var ehd = this;
         
         ehd.setElementReferences();
         
-        if (isWrapperDirective) {
-          ehd.moveTabContentOutsideScrollContainer();
+        if (options.isWrapperDirective) {
+          ehd.moveTabContentOutsideScrollContainer(options);
         }
         
         ehd.setEventListeners();
       };
 
-      p.moveTabContentOutsideScrollContainer = function () {
+      p.moveTabContentOutsideScrollContainer = function (options) {
         var ehd = this,
             stc = ehd.stc,
-            $tabsContainer = stc.$tabsContainer;
+            $tabsContainer = stc.$tabsContainer,
+            tabContentCloneCssClass = 'scrtabs-tab-content-clone',
+            tabContentHiddenCssClass = 'scrtabs-tab-content-hidden',
+            $tabContent = $tabsContainer.find('.tab-content').not('.' + tabContentCloneCssClass),
+            $currTcClone,
+            $newTcClone;
         
-        $tabsContainer.find('.tab-content').appendTo($tabsContainer);
+        // if the tabs array won't be changing, we can just move the
+        // the .tab-content outside the scrolling container right now
+        if (!options.isWatchingTabsArray) {
+          $tabContent.appendTo($tabsContainer);
+          return;
+        }
+
+        /* if we're watching the tabs array for changes, we can't just
+         * move the .tab-content outside the scrolling container because
+         * that will break the angular-ui directive dependencies, and
+         * an error will be thrown as soon as the tabs array changes;
+         * so we leave the .tab-content where it is but hide it, then
+         * make a clone and move the clone outside the scroll container,
+         * which will be the visible .tab-content.
+         */
+
+        // hide the original .tab-content if it's not already hidden         
+        if (!$tabContent.hasClass(tabContentHiddenCssClass)) {
+          $tabContent.addClass(tabContentHiddenCssClass);
+        }
+
+        // create new clone
+        $newTcClone = $tabContent
+                        .clone()
+                        .removeClass(tabContentHiddenCssClass)
+                        .addClass(tabContentCloneCssClass);
+
+        // get the current clone, if it exists
+        $currTcClone = $tabsContainer.find('.' + tabContentCloneCssClass);
+
+        if ($currTcClone.length) { // already a clone there so replace it
+          $currTcClone.replaceWith($newTcClone);
+        } else {
+          $tabsContainer.append($newTcClone);
+        }
+        
       };
 
       p.refreshAllElementSizes = function (isPossibleArrowVisibilityChange) {
@@ -208,7 +248,9 @@
             if (stc.movableContainerLeftPos < minPos) {
               smv.incrementScrollRight(minPos);
             } else {
-              smv.scrollToActiveTab(true); // true -> isOnWindowResize
+              smv.scrollToActiveTab({
+                isOnWindowResize: true
+              });
             }
           } else {
             // scroll arrows went away after resize, so position movable container at 0
@@ -411,7 +453,7 @@
       return (stc.movableContainerLeftPos === minPos);
     };
 
-    p.scrollToActiveTab = function (isOnWindowResize) {
+    p.scrollToActiveTab = function (options) {
       var smv = this,
           stc = smv.stc,
           $activeTab,
@@ -438,7 +480,7 @@
       overlap = activeTabLeftPos + activeTabWidth - rightArrowLeftPos;
 
       if (overlap > 0) {
-        stc.movableContainerLeftPos = isOnWindowResize ? (stc.movableContainerLeftPos - overlap) : -overlap;
+        stc.movableContainerLeftPos = (options.isOnWindowResize || options.isOnWrapperRefresh) ? (stc.movableContainerLeftPos - overlap) : -overlap;
         smv.slideMovableContainerToLeftPos();
       }
     };
@@ -516,15 +558,19 @@
   
   // prototype methods
   (function (p) {
-    p.initTabs = function (isWrapperDirective) {
+    p.initTabs = function (options) {
       var stc = this,
           elementsHandler = stc.elementsHandler,
           scrollMovement = stc.scrollMovement;
       
       stc.$timeout(function __initTabsAfterTimeout() {
-        elementsHandler.initElements(isWrapperDirective);
+        elementsHandler.initElements(options);
         elementsHandler.refreshAllElementSizes();
-        scrollMovement.scrollToActiveTab();
+        
+        scrollMovement.scrollToActiveTab({
+          isOnWrapperRefresh: (options.isWrapperDirective && options.isWatchingTabsArray)
+        });
+
       }, 100);
     };
    
@@ -600,7 +646,30 @@
         link: function(scope, element, attrs) {
           var scrollingTabsControl = new ScrollingTabsControl(element, $timeout);
 
-          scrollingTabsControl.initTabs(true); // true -> wrapper directive
+
+          if (!attrs.watchTabs) {
+            
+            // we don't need to watch the tabs array for changes, so just
+            // init the tabs control and return
+            scrollingTabsControl.initTabs({
+              isWrapperDirective: true
+            });
+            
+            return;
+          }
+          
+          // watch the tabs array for changes and refresh the tabs
+          // control any time it changes (whether the change is a
+          // new tab or just a change in which tab is selected)
+          scope.$watch(attrs.watchTabs, function (newVal, oldVal) {
+
+            scrollingTabsControl.initTabs({
+              isWrapperDirective: true,
+              isWatchingTabsArray: true
+            });
+            
+          }, true);
+          
         }
       };
   
