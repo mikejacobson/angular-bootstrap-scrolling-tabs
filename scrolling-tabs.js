@@ -162,14 +162,16 @@
     ehd.stc = scrollingTabsControl;
   }
   
-  // prototype methods
+  // ElementsHandler prototype methods
   (function (p) {
       p.initElements = function (options) {
-        var ehd = this;
+        var ehd = this,
+            stc = ehd.stc,
+            $tabsContainer = stc.$tabsContainer;
         
         ehd.setElementReferences();
         
-        if (options.isWrapperDirective) {
+        if (options.isWrappingAngularUITabset) {
           ehd.moveTabContentOutsideScrollContainer(options);
         }
         
@@ -480,7 +482,7 @@
       overlap = activeTabLeftPos + activeTabWidth - rightArrowLeftPos;
 
       if (overlap > 0) {
-        stc.movableContainerLeftPos = (options.isOnWindowResize || options.isOnWrapperRefresh) ? (stc.movableContainerLeftPos - overlap) : -overlap;
+        stc.movableContainerLeftPos = (options.isOnWindowResize || options.isOnTabsRefresh) ? (stc.movableContainerLeftPos - overlap) : -overlap;
         smv.slideMovableContainerToLeftPos();
       }
     };
@@ -568,7 +570,7 @@
         elementsHandler.refreshAllElementSizes();
         
         scrollMovement.scrollToActiveTab({
-          isOnWrapperRefresh: (options.isWrapperDirective && options.isWatchingTabsArray)
+          isOnTabsRefresh: options.isWatchingTabsArray
         });
 
       }, 100);
@@ -598,6 +600,7 @@
       replace: true,
       scope: {
         tabs: '@',
+        watchTabs: '=',
         propPaneId: '@',
         propTitle: '@',
         propActive: '@',
@@ -622,9 +625,74 @@
             $index: clickedTabElData.index,
             tab: clickedTabElData.tab
           });
+          
         });
 
-        scrollingTabsControl.initTabs(false); // false -> not the wrapper directive
+        if (!attrs.watchTabs) {
+          
+          // we're not watching the tabs array for changes so just init
+          // the tabs without adding a watch
+          scrollingTabsControl.initTabs({
+            isWrapperDirective: false
+          });
+          
+          return;
+        }
+        
+        // we're watching the tabs array for changes...
+        scope.$watch('watchTabs', function (latestTabsArray, prevTabsArray) {
+          var $activeTabLi,
+              activeIndex;
+
+          scope.tabsArr = scope.$eval(scope.tabs);
+
+          if (latestTabsArray.length && latestTabsArray[latestTabsArray.length - 1].active) { // new tab should be active
+
+            // the tab we just added should be active, so, after giving the 
+            // elements time to render (thus the $timeout), force a click on it so
+            // bootstrap's built-in tab/pane activation can do its thing, otherwise
+            // the tab will show as active but its content pane won't be
+            $timeout(function () {
+
+              element.find('ul.nav-tabs > li:last').removeClass('active').find('a[role="tab"]').click();
+
+            }, 0);
+            
+          } else { // --------- preserve the currently active tab
+            
+            // we've replaced the nav-tabs so, to get the currently active tab
+            // we need to get it from the DOM because clicking a tab doesn't update 
+            // the tabs array (Bootstrap's js just makes the clicked tab and its
+            // corresponding tab-content pane active); then we need to update
+            // the tabs array so it reflects the currently active tab before we
+            // call initTabs() because initTabs() generates the tab elements based
+            // on the array data.
+            
+            // get the index of the currently active tab
+            $activeTabLi = element.find('.nav-tabs > li.active');
+            
+            if ($activeTabLi.length) {
+              
+              activeIndex = $activeTabLi.data('index');
+              
+              scope.tabsArr.some(function __forEachTabsArrItem(t) {
+                if (t[scope.propActive]) {
+                  t[scope.propActive] = false;
+                  return true; // exit loop
+                }
+              });
+              
+              scope.tabsArr[activeIndex][scope.propActive] = true;
+            }
+          }
+                   
+          scrollingTabsControl.initTabs({
+            isWrapperDirective: false,
+            isWatchingTabsArray: true
+          });
+                   
+        }, true);
+        
       }
 
     };
@@ -644,7 +712,8 @@
         transclude: true,
         replace: true,
         link: function(scope, element, attrs) {
-          var scrollingTabsControl = new ScrollingTabsControl(element, $timeout);
+          var scrollingTabsControl = new ScrollingTabsControl(element, $timeout),
+              isWrappingAngularUITabset = element.find('tabset').length > 0;
 
 
           if (!attrs.watchTabs) {
@@ -652,7 +721,8 @@
             // we don't need to watch the tabs array for changes, so just
             // init the tabs control and return
             scrollingTabsControl.initTabs({
-              isWrapperDirective: true
+              isWrapperDirective: true,
+              isWrappingAngularUITabset: isWrappingAngularUITabset
             });
             
             return;
@@ -661,10 +731,38 @@
           // watch the tabs array for changes and refresh the tabs
           // control any time it changes (whether the change is a
           // new tab or just a change in which tab is selected)
-          scope.$watch(attrs.watchTabs, function (newVal, oldVal) {
+          scope.$watch(attrs.watchTabs, function (latestTabsArray, prevTabsArray) {
 
+            if (!isWrappingAngularUITabset) { // wrapping regular bootstrap nav-tabs
+              // if we're wrapping regular bootstrap nav-tabs, we need to 
+              // manually track the active tab because, if a tab is clicked,
+              // the tabs array doesn't update to reflect the new active tab;
+              // so if we make each dynamically added tab the new active tab,
+              // we need to deactivate whatever the currently active tab is, 
+              // and we have no way of knowing that from the state of the tabs
+              // array--we need to check the tab elements on the page
+              
+              // listen for tab clicks and update our tabs array accordingly because
+              // bootstrap doesn't do that              
+              if (latestTabsArray.length && latestTabsArray[latestTabsArray.length - 1].active) {
+
+                // the tab we just added should be active, so, after giving the 
+                // elements time to render (thus the $timeout), force a click on it so
+                // bootstrap's built-in tab/pane activation can do its thing, otherwise
+                // the tab will show as active but its content pane won't be
+                $timeout(function () {
+                  
+                  element.find('ul.nav-tabs > li:last').removeClass('active').find('a[role="tab"]').click();
+
+                }, 0);
+                
+              }
+              
+            }
+            
             scrollingTabsControl.initTabs({
               isWrapperDirective: true,
+              isWrappingAngularUITabset: isWrappingAngularUITabset,
               isWatchingTabsArray: true
             });
             
