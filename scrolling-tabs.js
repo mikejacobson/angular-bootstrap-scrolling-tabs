@@ -66,7 +66,7 @@
           if (!execAsap)
             func.apply(obj, args);
           timeout = null;
-        };
+        }
 
         if (timeout)
           clearTimeout(timeout);
@@ -295,13 +295,13 @@
             stc = ehd.stc,
             evh = stc.eventHandlers; // eventHandlers
 
-        stc.$leftScrollArrow.on({
+        stc.$leftScrollArrow.off('.scrtabs').on({
           'mousedown.scrtabs': function (e) { evh.handleMousedownOnLeftScrollArrow.call(evh, e); },
           'mouseup.scrtabs': function (e) { evh.handleMouseupOnLeftScrollArrow.call(evh, e); },
           'click.scrtabs': function (e) { evh.handleClickOnLeftScrollArrow.call(evh, e); }
         });
 
-        stc.$rightScrollArrow.on({
+        stc.$rightScrollArrow.off('.scrtabs').on({
           'mousedown.scrtabs': function (e) { evh.handleMousedownOnRightScrollArrow.call(evh, e); },
           'mouseup.scrtabs': function (e) { evh.handleMouseupOnRightScrollArrow.call(evh, e); },
           'click.scrtabs': function (e) { evh.handleClickOnRightScrollArrow.call(evh, e); }

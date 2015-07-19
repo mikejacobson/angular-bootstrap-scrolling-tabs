@@ -1,6 +1,6 @@
 {
   "name": "angular-bootstrap-scrolling-tabs",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "main": [
     "scrolling-tabs.js",
     "scrolling-tabs.css"
