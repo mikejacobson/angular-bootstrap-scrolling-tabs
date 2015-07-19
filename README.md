@@ -56,7 +56,7 @@ There are two directives to choose from, depending on your application:
 
 Use Cases
 ---------
-### <a id="uc1"></a>Use Case #1: Replace Standard Bootstrap Tabs
+#### <a id="uc1"></a>Use Case #1: Replace Standard Bootstrap Tabs
 
 If your `nav-tabs` markup looks like this (it assumes your tabs are data-driven and you're using `ng-repeat` to generate them):
 ```html
@@ -134,7 +134,7 @@ An optional `tab-click` attribute can also be added to the directive. That funct
 
 
 
-### <a id="uc2"></a>Use Case #2: Wrap Standard Bootstrap Tabs
+#### <a id="uc2"></a>Use Case #2: Wrap Standard Bootstrap Tabs
 
 If you would prefer to keep your standard Bootstrap `ul.nav-tabs` markup and just want to make it scrollable, you can wrap it in a `div` that has the `scrolling-tabs-wrapper` attribute directive on it:
 
@@ -160,7 +160,7 @@ If you would prefer to keep your standard Bootstrap `ul.nav-tabs` markup and jus
 
 
 
-### <a id="uc3"></a>Use Case #3: Wrap AngularUI Bootstrap Tabs
+#### <a id="uc3"></a>Use Case #3: Wrap AngularUI Bootstrap Tabs
 
 Similarly, if you're using AngularUI Bootstrap Tabs, you can make them scrollable by wrapping the `tabset` element in a `div` that has the `scrolling-tabs-wrapper` attribute directive on it:
 
@@ -183,7 +183,7 @@ Similarly, if you're using AngularUI Bootstrap Tabs, you can make them scrollabl
 Optional Features
 -----------------
 
-### <a id="ft1"></a>Support Adding Tabs Dynamically After Page Load
+#### <a id="ft1"></a>Support Adding Tabs Dynamically After Page Load
 
 If you will be adding tabs after page load (via, say, button click), add attribute `watch-tabs` to the directive element (either `scrolling-tabs` or `scrolling-tabs-wrapper`) and have it point to your tabs array:
 
@@ -199,7 +199,7 @@ If you will be adding tabs after page load (via, say, button click), add attribu
 This will add a watcher to your `tabs` array that triggers the directive to refresh itself if the array changes.
 
 
-### <a id="ft2"></a>Force Scroll to Tab Edge
+#### <a id="ft2"></a>Force Scroll to Tab Edge
 
 If you want to ensure the scrolling always ends with a tab edge aligned with the left scroll arrow so there won't be a partially hidden tab, add attribute `scroll-to-tab-edge="true"` to the `scrolling-tabs` or `scrolling-tabs-wrapper` directive:
 
