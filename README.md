@@ -15,10 +15,19 @@ And here are plunks showing them working with:
 * <a href="http://plnkr.co/edit/xemfYkJDzX7bxdJH1zz7?p=preview" target="_blank">Bootstrap 3 Tabs with tabs added dynamically after page load</a>
 * <a href="http://plnkr.co/edit/DKoQ71IvWvJcp30N217i?p=preview" target="_blank">AngularUI Bootstrap Tabs with tabs added dynamically after page load</a>
 
+Use Cases
+---------
 There are two directives to choose from, and three ways to use them:
-* [Option 1: Replace Standard Bootstrap Tabs](#opt1)
-* [Option 2: Wrap Standard Bootstrap Tabs](#opt2)
-* [Option 3: Wrap AngularUI Bootstrap Tabs](#opt3)
+* [Use Case #1: Replace Standard Bootstrap Tabs](#uc1)
+* [Use Case #2: Wrap Standard Bootstrap Tabs](#uc2)
+* [Use Case #3: Wrap AngularUI Bootstrap Tabs](#uc3)
+
+
+Optional Features
+-----------------
+There are also some optional features available:
+* [Support Adding Tabs Dynamically After Page Load](#ft1)
+* [Force Scroll to Tab Edge](#ft2)
 
 
 
@@ -45,8 +54,9 @@ There are two directives to choose from, depending on your application:
 `scrolling-tabs-wrapper` is an attribute directive that *wraps* either a standard Bootstrap `ul.nav-tabs` element or an AngularUI Bootstrap `tabset` element.
 
 
-<a id="opt1"></a>Option 1: Replace Standard Bootstrap Tabs
------------------------------------------
+Use Cases
+---------
+### <a id="uc1"></a>Use Case #1: Replace Standard Bootstrap Tabs
 
 If your `nav-tabs` markup looks like this (it assumes your tabs are data-driven and you're using `ng-repeat` to generate them):
 ```html
@@ -123,20 +133,8 @@ An optional `tab-click` attribute can also be added to the directive. That funct
 
 
 
-##### Adding Tabs Dynamically After Page Load
-If you will be adding tabs after page load, just add attribute `watch-tabs` to the directive element and have it point to your tabs array:
-```html
-<scrolling-tabs tabs="{{main.tabs}}"
-                watch-tabs="main.tabs"
-```
 
-This will add a watcher to your `tabs` array that triggers the directive to refresh itself if the array changes.
-
-
-
-
-<a id="opt2"></a>Option 2: Wrap Standard Bootstrap Tabs
---------------------------------------
+### <a id="uc2"></a>Use Case #2: Wrap Standard Bootstrap Tabs
 
 If you would prefer to keep your standard Bootstrap `ul.nav-tabs` markup and just want to make it scrollable, you can wrap it in a `div` that has the `scrolling-tabs-wrapper` attribute directive on it:
 
@@ -161,20 +159,8 @@ If you would prefer to keep your standard Bootstrap `ul.nav-tabs` markup and jus
 ```
 
 
-##### Adding Tabs Dynamically After Page Load
-If you will be adding tabs after page load, just add attribute `watch-tabs` to the directive element and have it point to your tabs array:
-```html
-<div scrolling-tabs-wrapper watch-tabs="main.tabs">
-```
 
-This will add a watcher to your `tabs` array that triggers the directive to refresh itself if the array changes.
-
-
-
-
-
-<a id="opt3"></a>Option 3: Wrap AngularUI Bootstrap Tabs
----------------------------------------
+### <a id="uc3"></a>Use Case #3: Wrap AngularUI Bootstrap Tabs
 
 Similarly, if you're using AngularUI Bootstrap Tabs, you can make them scrollable by wrapping the `tabset` element in a `div` that has the `scrolling-tabs-wrapper` attribute directive on it:
 
@@ -192,8 +178,20 @@ Similarly, if you're using AngularUI Bootstrap Tabs, you can make them scrollabl
 ```
 
 
-##### Adding Tabs Dynamically After Page Load
-If you will be adding tabs after page load, just add attribute `watch-tabs` to the directive element and have it point to your tabs array:
+
+
+Optional Features
+-----------------
+
+### <a id="ft1"></a>Support Adding Tabs Dynamically After Page Load
+
+If you will be adding tabs after page load (via, say, button click), add attribute `watch-tabs` to the directive element (either `scrolling-tabs` or `scrolling-tabs-wrapper`) and have it point to your tabs array:
+
+```html
+<scrolling-tabs tabs="{{main.tabs}}"
+                watch-tabs="main.tabs"
+```
+
 ```html
 <div scrolling-tabs-wrapper watch-tabs="main.tabs">
 ```
@@ -201,6 +199,20 @@ If you will be adding tabs after page load, just add attribute `watch-tabs` to t
 This will add a watcher to your `tabs` array that triggers the directive to refresh itself if the array changes.
 
 
+### <a id="ft2"></a>Force Scroll to Tab Edge
+
+If you want to ensure the scrolling always ends with a tab edge aligned with the left scroll arrow so there won't be a partially hidden tab, add attribute `scroll-to-tab-edge="true"` to the `scrolling-tabs` or `scrolling-tabs-wrapper` directive:
+
+```html
+<scrolling-tabs tabs="{{main.tabs}}"
+                scroll-to-tab-edge="true"
+```
+
+```html
+<div scrolling-tabs-wrapper scroll-to-tab-edge="true">
+```
+
+There's no way to guarantee the left *and* right edges will be full tabs because that's dependent on the the width of the tabs and the window. So this just makes sure the left side will be a full tab.
 
 
 

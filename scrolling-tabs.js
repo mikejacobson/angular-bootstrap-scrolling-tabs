@@ -270,6 +270,7 @@
         stc.$fixedContainer = $tabsContainer.find('.scrtabs-tabs-fixed-container');
         stc.$movableContainer = $tabsContainer.find('.scrtabs-tabs-movable-container');
         stc.$tabsUl = $tabsContainer.find('.nav-tabs');
+        stc.$tabsLiCollection = stc.$tabsUl.find('> li');
         stc.$leftScrollArrow = $tabsContainer.find('.scrtabs-js-tab-scroll-arrow-left');
         stc.$rightScrollArrow = $tabsContainer.find('.scrtabs-js-tab-scroll-arrow-right');
         stc.$scrollArrows = stc.$leftScrollArrow.add(stc.$rightScrollArrow);
@@ -414,6 +415,12 @@
       stc.movableContainerLeftPos -= (stc.fixedContainerWidth / CONSTANTS.SCROLL_OFFSET_FRACTION);
       if (stc.movableContainerLeftPos < minPos) {
         stc.movableContainerLeftPos = minPos;
+      } else if (stc.scrollToTabEdge) {
+        smv.setMovableContainerLeftPosToTabEdge('right');
+        
+        if (stc.movableContainerLeftPos < minPos) {
+          stc.movableContainerLeftPos = minPos;
+        }
       }
     };
 
@@ -435,9 +442,16 @@
       var smv = this,
           stc = smv.stc;
 
-      stc.movableContainerLeftPos += (stc.fixedContainerWidth / CONSTANTS.SCROLL_OFFSET_FRACTION);
+      stc.movableContainerLeftPos += (stc.fixedContainerWidth / CONSTANTS.SCROLL_OFFSET_FRACTION);      
+
       if (stc.movableContainerLeftPos > 0) {
         stc.movableContainerLeftPos = 0;
+      } else if (stc.scrollToTabEdge) {
+        smv.setMovableContainerLeftPosToTabEdge('left');
+        
+        if (stc.movableContainerLeftPos > 0) {
+          stc.movableContainerLeftPos = 0;
+        }
       }
 
       smv.slideMovableContainerToLeftPos();
@@ -487,6 +501,27 @@
       }
     };
 
+    p.setMovableContainerLeftPosToTabEdge = function (scrollArrowClicked) {
+      var smv = this,
+          stc = smv.stc,
+          offscreenWidth = -stc.movableContainerLeftPos,
+          totalTabWidth = 0;
+          
+        // make sure LeftPos is set so that a tab edge will be against the
+        // left scroll arrow so we won't have a partial, cut-off tab
+        stc.$tabsLiCollection.each(function (index) {
+          var tabWidth = $(this).width();
+          
+          totalTabWidth += tabWidth;
+          
+          if (totalTabWidth > offscreenWidth) {
+            stc.movableContainerLeftPos = (scrollArrowClicked === 'left') ? -(totalTabWidth - tabWidth) : -totalTabWidth;
+            return false; // exit .each() loop
+          }
+          
+        });
+    };
+    
     p.slideMovableContainerToLeftPos = function () {
       var smv = this,
           stc = smv.stc,
@@ -552,6 +587,7 @@
     
     stc.movableContainerLeftPos = 0;
     stc.scrollArrowsVisible = true;
+    stc.scrollToTabEdge = false;
     
     stc.scrollMovement = new ScrollMovement(stc);
     stc.eventHandlers = new EventHandlers(stc);
@@ -564,6 +600,10 @@
       var stc = this,
           elementsHandler = stc.elementsHandler,
           scrollMovement = stc.scrollMovement;
+      
+      if (options.scrollToTabEdge) {
+        stc.scrollToTabEdge = true;  
+      }
       
       stc.$timeout(function __initTabsAfterTimeout() {
         elementsHandler.initElements(options);
@@ -608,7 +648,8 @@
         localTabClick: '&tabClick'
       },
       link: function(scope, element, attrs) {
-        var scrollingTabsControl = new ScrollingTabsControl(element, $timeout);
+        var scrollingTabsControl = new ScrollingTabsControl(element, $timeout),
+            scrollToTabEdge = attrs.scrollToTabEdge && attrs.scrollToTabEdge.toLowerCase() === 'true';            
 
         scope.tabsArr = scope.$eval(scope.tabs);
         scope.propPaneId = scope.propPaneId || 'paneId';
@@ -616,6 +657,7 @@
         scope.propActive = scope.propActive || 'active';
         scope.propDisabled = scope.propDisabled || 'disabled';
         scope.sanitize = sanitize;
+
 
         element.on('click.scrollingTabs', '.nav-tabs > li', function __handleClickOnTab(e) {
           var clickedTabElData = $(this).data();
@@ -633,7 +675,8 @@
           // we're not watching the tabs array for changes so just init
           // the tabs without adding a watch
           scrollingTabsControl.initTabs({
-            isWrapperDirective: false
+            isWrapperDirective: false,
+            scrollToTabEdge: scrollToTabEdge
           });
           
           return;
@@ -688,7 +731,8 @@
                    
           scrollingTabsControl.initTabs({
             isWrapperDirective: false,
-            isWatchingTabsArray: true
+            isWatchingTabsArray: true,
+            scrollToTabEdge: scrollToTabEdge
           });
                    
         }, true);
@@ -713,8 +757,9 @@
         replace: true,
         link: function(scope, element, attrs) {
           var scrollingTabsControl = new ScrollingTabsControl(element, $timeout),
-              isWrappingAngularUITabset = element.find('tabset').length > 0;
-
+              isWrappingAngularUITabset = element.find('tabset').length > 0,
+              scrollToTabEdge = attrs.scrollToTabEdge && attrs.scrollToTabEdge.toLowerCase() === 'true';            
+              
 
           if (!attrs.watchTabs) {
             
@@ -722,7 +767,8 @@
             // init the tabs control and return
             scrollingTabsControl.initTabs({
               isWrapperDirective: true,
-              isWrappingAngularUITabset: isWrappingAngularUITabset
+              isWrappingAngularUITabset: isWrappingAngularUITabset,
+              scrollToTabEdge: scrollToTabEdge
             });
             
             return;
@@ -763,7 +809,8 @@
             scrollingTabsControl.initTabs({
               isWrapperDirective: true,
               isWrappingAngularUITabset: isWrappingAngularUITabset,
-              isWatchingTabsArray: true
+              isWatchingTabsArray: true,
+              scrollToTabEdge: scrollToTabEdge
             });
             
           }, true);
