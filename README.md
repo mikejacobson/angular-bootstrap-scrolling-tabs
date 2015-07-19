@@ -185,7 +185,7 @@ Optional Features
 
 #### <a id="ft1"></a>Support Adding Tabs Dynamically After Page Load
 
-If you will be adding tabs after page load (via, say, button click), add attribute `watch-tabs` to the directive element (either `scrolling-tabs` or `scrolling-tabs-wrapper`) and have it point to your tabs array:
+If you will be adding tabs after page load (via, say, button click), add attribute `watch-tabs` to the directive element and have it point to your tabs array:
 
 ```html
 <scrolling-tabs tabs="{{main.tabs}}"
@@ -201,7 +201,7 @@ This will add a watcher to your `tabs` array that triggers the directive to refr
 
 #### <a id="ft2"></a>Force Scroll to Tab Edge
 
-If you want to ensure the scrolling always ends with a tab edge aligned with the left scroll arrow so there won't be a partially hidden tab, add attribute `scroll-to-tab-edge="true"` to the `scrolling-tabs` or `scrolling-tabs-wrapper` directive:
+If you want to ensure the scrolling always ends with a tab edge aligned with the left scroll arrow so there won't be a partially hidden tab, add attribute `scroll-to-tab-edge="true"` to the directive element:
 
 ```html
 <scrolling-tabs tabs="{{main.tabs}}"
