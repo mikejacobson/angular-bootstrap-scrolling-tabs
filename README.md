@@ -10,7 +10,7 @@ Here's what they look like:
 
 And here are plunks showing them working with:
 
-* <a href="http://plnkr.co/edit/rN00h68xVv1w2BLGvF23?p=preview" target="_blank">Bootstrap 3 Tabs</a>
+* <a href="http://plnkr.co/edit/rN00h68xVv1w2BLGvF23?p=preview" target="_blank">Bootstrap 3 Tabs (and Pills)</a>
 * <a href="http://plnkr.co/edit/JgDbtyGhZAIyfA0XoK28?p=preview" target="_blank">AngularUI Bootstrap Tabs</a>
 * <a href="http://plnkr.co/edit/xemfYkJDzX7bxdJH1zz7?p=preview" target="_blank">Bootstrap 3 Tabs with tabs added dynamically after page load</a>
 * <a href="http://plnkr.co/edit/DKoQ71IvWvJcp30N217i?p=preview" target="_blank">AngularUI Bootstrap Tabs with tabs added dynamically after page load</a>
