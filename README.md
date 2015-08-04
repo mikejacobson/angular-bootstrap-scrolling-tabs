@@ -19,7 +19,7 @@ Use Cases
 ---------
 There are two directives to choose from, and three ways to use them:
 * [Use Case #1: Replace Standard Bootstrap Tabs](#uc1)
-* [Use Case #2: Wrap Standard Bootstrap Tabs](#uc2)
+* [Use Case #2: Wrap Standard Bootstrap Tabs (or Pills)](#uc2)
 * [Use Case #3: Wrap AngularUI Bootstrap Tabs](#uc3)
 
 
@@ -134,21 +134,21 @@ An optional `tab-click` attribute can also be added to the directive. That funct
 
 
 
-#### <a id="uc2"></a>Use Case #2: Wrap Standard Bootstrap Tabs
+#### <a id="uc2"></a>Use Case #2: Wrap Standard Bootstrap Tabs (or Pills)
 
-If you would prefer to keep your standard Bootstrap `ul.nav-tabs` markup and just want to make it scrollable, you can wrap it in a `div` that has the `scrolling-tabs-wrapper` attribute directive on it:
+If you would prefer to keep your standard Bootstrap `ul.nav-tabs` (or `ul.nav-pills`) markup and just want to make it scrollable, you can wrap it in a `div` that has the `scrolling-tabs-wrapper` attribute directive on it:
 
 ```html
   <!-- wrap nav-tabs ul in a div with scrolling-tabs-wrapper directive on it -->
   <div scrolling-tabs-wrapper>
-  
+
     <!-- Standard Bootstrap ul.nav-tabs -->
     <ul class="nav nav-tabs" role="tablist">
       <li ng-class="{ 'active': tab.active, 'disabled': tab.disabled }" ng-repeat="tab in main.tabs">
         <a ng-href="{{'#' + tab.paneId}}" role="tab" data-toggle="tab">{{tab.title}}</a>
       </li>
     </ul>
-    
+
   </div>
 
   <!-- Tab panes -->

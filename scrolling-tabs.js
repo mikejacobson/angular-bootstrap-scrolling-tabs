@@ -2,10 +2,10 @@
   'use strict';
 
   var CONSTANTS = {
-    CONTINUOUS_SCROLLING_TIMEOUT_INTERVAL: 50, // timeout interval for repeatedly moving the tabs container 
-                                                // by one increment while the mouse is held down--decrease to 
+    CONTINUOUS_SCROLLING_TIMEOUT_INTERVAL: 50, // timeout interval for repeatedly moving the tabs container
+                                                // by one increment while the mouse is held down--decrease to
                                                 // make mousedown continous scrolling faster
-    SCROLL_OFFSET_FRACTION: 6, // each click moves the container this fraction of the fixed container--decrease 
+    SCROLL_OFFSET_FRACTION: 6, // each click moves the container this fraction of the fixed container--decrease
                                // to make the tabs scroll farther per click
     DATA_KEY_IS_MOUSEDOWN: 'ismousedown'
   },
@@ -36,7 +36,7 @@
     ' <div class="scrtabs-tab-scroll-arrow scrtabs-js-tab-scroll-arrow-right"><span class="glyphicon glyphicon-chevron-right"></span></div>',
     '</div>'
   ].join(''),
-  
+
 
   /* *************************************************************
    * scrolling-tabs-wrapper element directive template
@@ -51,7 +51,7 @@
     ' <div class="scrtabs-tab-scroll-arrow scrtabs-js-tab-scroll-arrow-right"><span class="glyphicon glyphicon-chevron-right"></span></div>',
     '</div>'
   ].join('');
-  
+
 
 
 
@@ -87,10 +87,10 @@
    * **********************************************************************************/
   function EventHandlers(scrollingTabsControl) {
     var evh = this;
-    
+
     evh.stc = scrollingTabsControl;
   }
-  
+
   // prototype methods
   (function (p){
     p.handleClickOnLeftScrollArrow = function (e) {
@@ -148,7 +148,7 @@
       stc.winWidth = newWinWidth;
       stc.elementsHandler.refreshAllElementSizes(true); // true -> check for scroll arrows not being necessary anymore
     };
-    
+
   }(EventHandlers.prototype));
 
 
@@ -158,23 +158,23 @@
    * **********************************************************************************/
   function ElementsHandler(scrollingTabsControl) {
     var ehd = this;
-    
+
     ehd.stc = scrollingTabsControl;
   }
-  
+
   // ElementsHandler prototype methods
   (function (p) {
       p.initElements = function (options) {
         var ehd = this,
             stc = ehd.stc,
             $tabsContainer = stc.$tabsContainer;
-        
+
         ehd.setElementReferences();
-        
+
         if (options.isWrappingAngularUITabset) {
           ehd.moveTabContentOutsideScrollContainer(options);
         }
-        
+
         ehd.setEventListeners();
       };
 
@@ -187,7 +187,7 @@
             $tabContent = $tabsContainer.find('.tab-content').not('.' + tabContentCloneCssClass),
             $currTcClone,
             $newTcClone;
-        
+
         // if the tabs array won't be changing, we can just move the
         // the .tab-content outside the scrolling container right now
         if (!options.isWatchingTabsArray) {
@@ -204,7 +204,7 @@
          * which will be the visible .tab-content.
          */
 
-        // hide the original .tab-content if it's not already hidden         
+        // hide the original .tab-content if it's not already hidden
         if (!$tabContent.hasClass(tabContentHiddenCssClass)) {
           $tabContent.addClass(tabContentHiddenCssClass);
         }
@@ -223,7 +223,7 @@
         } else {
           $tabsContainer.append($newTcClone);
         }
-        
+
       };
 
       p.refreshAllElementSizes = function (isPossibleArrowVisibilityChange) {
@@ -267,9 +267,21 @@
             stc = ehd.stc,
             $tabsContainer = stc.$tabsContainer;
 
+        stc.isNavPills = false;
+
         stc.$fixedContainer = $tabsContainer.find('.scrtabs-tabs-fixed-container');
         stc.$movableContainer = $tabsContainer.find('.scrtabs-tabs-movable-container');
         stc.$tabsUl = $tabsContainer.find('.nav-tabs');
+
+        // check for pills
+        if (!stc.$tabsUl.length) {
+          stc.$tabsUl = $tabsContainer.find('.nav-pills');
+
+          if (stc.$tabsUl.length) {
+            stc.isNavPills = true;
+          }
+        }
+
         stc.$tabsLiCollection = stc.$tabsUl.find('> li');
         stc.$leftScrollArrow = $tabsContainer.find('.scrtabs-js-tab-scroll-arrow-left');
         stc.$rightScrollArrow = $tabsContainer.find('.scrtabs-js-tab-scroll-arrow-right');
@@ -309,7 +321,7 @@
         });
 
         stc.$win.smartresize(function (e) { evh.handleWindowResize.call(evh, e); });
-        
+
       };
 
       p.setFixedContainerWidth = function () {
@@ -340,9 +352,14 @@
         stc.movableContainerWidth = 0;
 
         stc.$tabsUl.find('li').each(function __getLiWidth() {
-          var $li = $(this);
-          
-          stc.movableContainerWidth += $li.outerWidth();
+          var $li = $(this),
+              totalMargin = 0;
+
+          if (stc.isNavPills) { // pills have a margin-left, tabs have no margin
+            totalMargin = parseInt($li.css('margin-left'), 10) + parseInt($li.css('margin-right'), 10);
+          }
+
+          stc.movableContainerWidth += ($li.outerWidth() + totalMargin);
         });
 
         stc.$movableContainer.width(stc.movableContainerWidth += 1);
@@ -363,27 +380,27 @@
           ehd.setFixedContainerWidthForJustHiddenScrollArrows();
         }
       };
-    
-  }(ElementsHandler.prototype));
-  
 
-  
+  }(ElementsHandler.prototype));
+
+
+
   /* ***********************************************************************************
    * ScrollMovement - Class that each instance of ScrollingTabsControl will instantiate
    * **********************************************************************************/
   function ScrollMovement(scrollingTabsControl) {
     var smv = this;
-    
+
     smv.stc = scrollingTabsControl;
   }
-  
+
   // prototype methods
   (function (p) {
-    
+
     p.continueScrollLeft = function () {
       var smv = this,
           stc = smv.stc;
-      
+
       stc.$timeout(function() {
         if (stc.$leftScrollArrow.data(CONSTANTS.DATA_KEY_IS_MOUSEDOWN) && (stc.movableContainerLeftPos < 0)) {
           if (!smv.incrementScrollLeft()) { // scroll limit not reached, so keep scrolling
@@ -417,7 +434,7 @@
         stc.movableContainerLeftPos = minPos;
       } else if (stc.scrollToTabEdge) {
         smv.setMovableContainerLeftPosToTabEdge('right');
-        
+
         if (stc.movableContainerLeftPos < minPos) {
           stc.movableContainerLeftPos = minPos;
         }
@@ -442,13 +459,13 @@
       var smv = this,
           stc = smv.stc;
 
-      stc.movableContainerLeftPos += (stc.fixedContainerWidth / CONSTANTS.SCROLL_OFFSET_FRACTION);      
+      stc.movableContainerLeftPos += (stc.fixedContainerWidth / CONSTANTS.SCROLL_OFFSET_FRACTION);
 
       if (stc.movableContainerLeftPos > 0) {
         stc.movableContainerLeftPos = 0;
       } else if (stc.scrollToTabEdge) {
         smv.setMovableContainerLeftPosToTabEdge('left');
-        
+
         if (stc.movableContainerLeftPos > 0) {
           stc.movableContainerLeftPos = 0;
         }
@@ -506,22 +523,22 @@
           stc = smv.stc,
           offscreenWidth = -stc.movableContainerLeftPos,
           totalTabWidth = 0;
-          
+
         // make sure LeftPos is set so that a tab edge will be against the
         // left scroll arrow so we won't have a partial, cut-off tab
         stc.$tabsLiCollection.each(function (index) {
           var tabWidth = $(this).width();
-          
+
           totalTabWidth += tabWidth;
-          
+
           if (totalTabWidth > offscreenWidth) {
             stc.movableContainerLeftPos = (scrollArrowClicked === 'left') ? -(totalTabWidth - tabWidth) : -totalTabWidth;
             return false; // exit .each() loop
           }
-          
+
         });
     };
-    
+
     p.slideMovableContainerToLeftPos = function () {
       var smv = this,
           stc = smv.stc,
@@ -533,7 +550,7 @@
       stc.$movableContainer.stop().animate({ left: leftVal }, 'slow', function __slideAnimComplete() {
         var newMinPos = smv.getMinPos();
 
-        // if we slid past the min pos--which can happen if you resize the window 
+        // if we slid past the min pos--which can happen if you resize the window
         // quickly--move back into position
         if (stc.movableContainerLeftPos < newMinPos) {
           smv.decrementMovableContainerLeftPos(newMinPos);
@@ -571,55 +588,55 @@
 
       stc.$rightScrollArrow.data(CONSTANTS.DATA_KEY_IS_MOUSEDOWN, false);
     };
-    
+
   }(ScrollMovement.prototype));
-  
-  
-  
+
+
+
   /* **********************************************************************
    * ScrollingTabsControl - Class that each directive will instantiate
    * **********************************************************************/
   function ScrollingTabsControl($tabsContainer, $timeout) {
     var stc = this;
-    
+
     stc.$tabsContainer = $tabsContainer;
     stc.$timeout = $timeout,
-    
+
     stc.movableContainerLeftPos = 0;
     stc.scrollArrowsVisible = true;
     stc.scrollToTabEdge = false;
-    
+
     stc.scrollMovement = new ScrollMovement(stc);
     stc.eventHandlers = new EventHandlers(stc);
     stc.elementsHandler = new ElementsHandler(stc);
   }
-  
+
   // prototype methods
   (function (p) {
     p.initTabs = function (options) {
       var stc = this,
           elementsHandler = stc.elementsHandler,
           scrollMovement = stc.scrollMovement;
-      
+
       if (options.scrollToTabEdge) {
-        stc.scrollToTabEdge = true;  
+        stc.scrollToTabEdge = true;
       }
-      
+
       stc.$timeout(function __initTabsAfterTimeout() {
         elementsHandler.initElements(options);
         elementsHandler.refreshAllElementSizes();
-        
+
         scrollMovement.scrollToActiveTab({
           isOnTabsRefresh: options.isWatchingTabsArray
         });
 
       }, 100);
     };
-   
-    
+
+
   }(ScrollingTabsControl.prototype));
-  
-  
+
+
 
   /* ********************************************************
    * scrolling-tabs Directive
@@ -630,7 +647,7 @@
     function sanitize (html) {
       return $sce.trustAsHtml(html);
     }
-    
+
 
     // ------------ Directive Object ---------------------------
     return {
@@ -649,7 +666,7 @@
       },
       link: function(scope, element, attrs) {
         var scrollingTabsControl = new ScrollingTabsControl(element, $timeout),
-            scrollToTabEdge = attrs.scrollToTabEdge && attrs.scrollToTabEdge.toLowerCase() === 'true';            
+            scrollToTabEdge = attrs.scrollToTabEdge && attrs.scrollToTabEdge.toLowerCase() === 'true';
 
         scope.tabsArr = scope.$eval(scope.tabs);
         scope.propPaneId = scope.propPaneId || 'paneId';
@@ -667,21 +684,21 @@
             $index: clickedTabElData.index,
             tab: clickedTabElData.tab
           });
-          
+
         });
 
         if (!attrs.watchTabs) {
-          
+
           // we're not watching the tabs array for changes so just init
           // the tabs without adding a watch
           scrollingTabsControl.initTabs({
             isWrapperDirective: false,
             scrollToTabEdge: scrollToTabEdge
           });
-          
+
           return;
         }
-        
+
         // we're watching the tabs array for changes...
         scope.$watch('watchTabs', function (latestTabsArray, prevTabsArray) {
           var $activeTabLi,
@@ -691,7 +708,7 @@
 
           if (latestTabsArray.length && latestTabsArray[latestTabsArray.length - 1].active) { // new tab should be active
 
-            // the tab we just added should be active, so, after giving the 
+            // the tab we just added should be active, so, after giving the
             // elements time to render (thus the $timeout), force a click on it so
             // bootstrap's built-in tab/pane activation can do its thing, otherwise
             // the tab will show as active but its content pane won't be
@@ -700,43 +717,43 @@
               element.find('ul.nav-tabs > li:last').removeClass('active').find('a[role="tab"]').click();
 
             }, 0);
-            
+
           } else { // --------- preserve the currently active tab
-            
+
             // we've replaced the nav-tabs so, to get the currently active tab
-            // we need to get it from the DOM because clicking a tab doesn't update 
+            // we need to get it from the DOM because clicking a tab doesn't update
             // the tabs array (Bootstrap's js just makes the clicked tab and its
             // corresponding tab-content pane active); then we need to update
             // the tabs array so it reflects the currently active tab before we
             // call initTabs() because initTabs() generates the tab elements based
             // on the array data.
-            
+
             // get the index of the currently active tab
             $activeTabLi = element.find('.nav-tabs > li.active');
-            
+
             if ($activeTabLi.length) {
-              
+
               activeIndex = $activeTabLi.data('index');
-              
+
               scope.tabsArr.some(function __forEachTabsArrItem(t) {
                 if (t[scope.propActive]) {
                   t[scope.propActive] = false;
                   return true; // exit loop
                 }
               });
-              
+
               scope.tabsArr[activeIndex][scope.propActive] = true;
             }
           }
-                   
+
           scrollingTabsControl.initTabs({
             isWrapperDirective: false,
             isWatchingTabsArray: true,
             scrollToTabEdge: scrollToTabEdge
           });
-                   
+
         }, true);
-        
+
       }
 
     };
@@ -758,11 +775,11 @@
         link: function(scope, element, attrs) {
           var scrollingTabsControl = new ScrollingTabsControl(element, $timeout),
               isWrappingAngularUITabset = element.find('tabset').length > 0,
-              scrollToTabEdge = attrs.scrollToTabEdge && attrs.scrollToTabEdge.toLowerCase() === 'true';            
-              
+              scrollToTabEdge = attrs.scrollToTabEdge && attrs.scrollToTabEdge.toLowerCase() === 'true';
+
 
           if (!attrs.watchTabs) {
-            
+
             // we don't need to watch the tabs array for changes, so just
             // init the tabs control and return
             scrollingTabsControl.initTabs({
@@ -770,54 +787,54 @@
               isWrappingAngularUITabset: isWrappingAngularUITabset,
               scrollToTabEdge: scrollToTabEdge
             });
-            
+
             return;
           }
-          
+
           // watch the tabs array for changes and refresh the tabs
           // control any time it changes (whether the change is a
           // new tab or just a change in which tab is selected)
           scope.$watch(attrs.watchTabs, function (latestTabsArray, prevTabsArray) {
 
             if (!isWrappingAngularUITabset) { // wrapping regular bootstrap nav-tabs
-              // if we're wrapping regular bootstrap nav-tabs, we need to 
+              // if we're wrapping regular bootstrap nav-tabs, we need to
               // manually track the active tab because, if a tab is clicked,
               // the tabs array doesn't update to reflect the new active tab;
               // so if we make each dynamically added tab the new active tab,
-              // we need to deactivate whatever the currently active tab is, 
+              // we need to deactivate whatever the currently active tab is,
               // and we have no way of knowing that from the state of the tabs
               // array--we need to check the tab elements on the page
-              
+
               // listen for tab clicks and update our tabs array accordingly because
-              // bootstrap doesn't do that              
+              // bootstrap doesn't do that
               if (latestTabsArray.length && latestTabsArray[latestTabsArray.length - 1].active) {
 
-                // the tab we just added should be active, so, after giving the 
+                // the tab we just added should be active, so, after giving the
                 // elements time to render (thus the $timeout), force a click on it so
                 // bootstrap's built-in tab/pane activation can do its thing, otherwise
                 // the tab will show as active but its content pane won't be
                 $timeout(function () {
-                  
+
                   element.find('ul.nav-tabs > li:last').removeClass('active').find('a[role="tab"]').click();
 
                 }, 0);
-                
+
               }
-              
+
             }
-            
+
             scrollingTabsControl.initTabs({
               isWrapperDirective: true,
               isWrappingAngularUITabset: isWrappingAngularUITabset,
               isWatchingTabsArray: true,
               scrollToTabEdge: scrollToTabEdge
             });
-            
+
           }, true);
-          
+
         }
       };
-  
+
   }
 
 
