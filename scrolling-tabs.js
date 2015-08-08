@@ -1,4 +1,4 @@
-﻿;(function () {
+;(function () {
   'use strict';
 
   var CONSTANTS = {
@@ -600,7 +600,7 @@
     var stc = this;
 
     stc.$tabsContainer = $tabsContainer;
-    stc.$timeout = $timeout,
+    stc.$timeout = $timeout;
 
     stc.movableContainerLeftPos = 0;
     stc.scrollArrowsVisible = true;
