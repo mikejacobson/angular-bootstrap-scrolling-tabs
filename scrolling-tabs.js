@@ -146,7 +146,7 @@
       }
 
       stc.winWidth = newWinWidth;
-      stc.elementsHandler.refreshAllElementSizes(true); // true -> check for scroll arrows not being necessary anymore
+      stc.elementsHandler.refreshAllElementSizes();
     };
 
   }(EventHandlers.prototype));
@@ -226,11 +226,14 @@
 
       };
 
-      p.refreshAllElementSizes = function (isPossibleArrowVisibilityChange) {
+      p.refreshAllElementSizes = function () {
         var ehd = this,
             stc = ehd.stc,
             smv = stc.scrollMovement,
             scrollArrowsWereVisible = stc.scrollArrowsVisible,
+            actionsTaken = {
+              didScrollToActiveTab: false
+            },
             minPos;
 
         ehd.setElementWidths();
@@ -240,10 +243,12 @@
           ehd.setFixedContainerWidthForJustVisibleScrollArrows();
         }
 
-        // if this was a window resize, make sure the movable container is positioned
-        // correctly because, if it is far to the left and we increased the window width, it's
-        // possible that the tabs will be too far left, beyond the min pos.
-        if (isPossibleArrowVisibilityChange && (stc.scrollArrowsVisible || scrollArrowsWereVisible)) {
+        // this could have been a window resize or the removal of a
+        // dynamic tab, so make sure the movable container is positioned
+        // correctly because, if it is far to the left and we increased the
+        // window width, it's possible that the tabs will be too far left,
+        // beyond the min pos.
+        if (stc.scrollArrowsVisible || scrollArrowsWereVisible) {
           if (stc.scrollArrowsVisible) {
             // make sure container not too far left
             minPos = smv.getMinPos();
@@ -253,6 +258,8 @@
               smv.scrollToActiveTab({
                 isOnWindowResize: true
               });
+
+              actionsTaken.didScrollToActiveTab = true;
             }
           } else {
             // scroll arrows went away after resize, so position movable container at 0
@@ -260,6 +267,8 @@
             smv.slideMovableContainerToLeftPos();
           }
         }
+
+        return actionsTaken;
       };
 
       p.setElementReferences = function () {
@@ -623,12 +632,17 @@
       }
 
       stc.$timeout(function __initTabsAfterTimeout() {
-        elementsHandler.initElements(options);
-        elementsHandler.refreshAllElementSizes();
+        var actionsTaken;
 
-        scrollMovement.scrollToActiveTab({
-          isOnTabsRefresh: options.isWatchingTabsArray
-        });
+        elementsHandler.initElements(options);
+        actionsTaken = elementsHandler.refreshAllElementSizes();
+
+        if (!actionsTaken.didScrollToActiveTab) {
+          scrollMovement.scrollToActiveTab({
+            isOnTabsRefresh: options.isWatchingTabsArray
+          });
+        }
+
 
       }, 100);
     };
