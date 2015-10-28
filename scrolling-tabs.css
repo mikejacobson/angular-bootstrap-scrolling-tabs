@@ -7,8 +7,12 @@
 .scrtabs-tab-container {
   height: 42px;
 }
+/* line 12, scrolling-tabs.scss */
+.scrtabs-tab-container .tab-content {
+  clear: left;
+}
 
-/* line 14, scrolling-tabs.scss */
+/* line 17, scrolling-tabs.scss */
 .scrtabs-tabs-fixed-container {
   float: left;
   height: 42px;
@@ -16,12 +20,12 @@
   width: 100%;
 }
 
-/* line 21, scrolling-tabs.scss */
+/* line 24, scrolling-tabs.scss */
 .scrtabs-tabs-movable-container {
   position: relative;
 }
 
-/* line 25, scrolling-tabs.scss */
+/* line 28, scrolling-tabs.scss */
 .scrtabs-tab-scroll-arrow {
   border: 1px solid #dddddd;
   border-top: none;
@@ -35,21 +39,21 @@
   padding-top: 13px;
   width: 20px;
 }
-/* line 37, scrolling-tabs.scss */
+/* line 40, scrolling-tabs.scss */
 .scrtabs-tab-scroll-arrow:hover {
   background-color: #eeeeee;
 }
 
-/* line 42, scrolling-tabs.scss */
+/* line 45, scrolling-tabs.scss */
 .scrtabs-tabs-fixed-container ul.nav-tabs {
   height: 41px;
 }
-/* line 44, scrolling-tabs.scss */
+/* line 47, scrolling-tabs.scss */
 .scrtabs-tabs-fixed-container ul.nav-tabs > li {
   white-space: nowrap;
 }
 
-/* line 49, scrolling-tabs.scss */
+/* line 52, scrolling-tabs.scss */
 .scrtabs-tab-content-hidden {
   display: none;
 }
