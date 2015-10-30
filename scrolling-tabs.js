@@ -1,6 +1,14 @@
 ;(function () {
   'use strict';
 
+  /**
+   * angular-bootstrap-scrolling-tabs
+   * @version v0.0.19
+   * @link https://github.com/mikejacobson/angular-bootstrap-scrolling-tabs
+   * @author Mike Jacobson <michaeljjacobson1@gmail.com>
+   * @license MIT License, http://www.opensource.org/licenses/MIT
+   */
+
   var CONSTANTS = {
     CONTINUOUS_SCROLLING_TIMEOUT_INTERVAL: 50, // timeout interval for repeatedly moving the tabs container
                                                 // by one increment while the mouse is held down--decrease to
@@ -188,17 +196,17 @@
             $currTcClone,
             $newTcClone;
 
-        // if the tabs array won't be changing, we can just move the
+        // if the tabs won't be changing, we can just move the
         // the .tab-content outside the scrolling container right now
-        if (!options.isWatchingTabsArray) {
+        if (!options.isWatchingTabs) {
           $tabContent.appendTo($tabsContainer);
           return;
         }
 
-        /* if we're watching the tabs array for changes, we can't just
+        /* if we're watching the tabs for changes, we can't just
          * move the .tab-content outside the scrolling container because
          * that will break the angular-ui directive dependencies, and
-         * an error will be thrown as soon as the tabs array changes;
+         * an error will be thrown as soon as the tabs change;
          * so we leave the .tab-content where it is but hide it, then
          * make a clone and move the clone outside the scroll container,
          * which will be the visible .tab-content.
@@ -356,22 +364,36 @@
 
       p.setMovableContainerWidth = function () {
         var ehd = this,
-            stc = ehd.stc;
+            stc = ehd.stc,
+            $tabLi = stc.$tabsUl.find('li');
 
         stc.movableContainerWidth = 0;
 
-        stc.$tabsUl.find('li').each(function __getLiWidth() {
-          var $li = $(this),
-              totalMargin = 0;
+        if ($tabLi.length) {
 
-          if (stc.isNavPills) { // pills have a margin-left, tabs have no margin
-            totalMargin = parseInt($li.css('margin-left'), 10) + parseInt($li.css('margin-right'), 10);
+          $tabLi.each(function __getLiWidth() {
+            var $li = $(this),
+                totalMargin = 0;
+
+            if (stc.isNavPills) { // pills have a margin-left, tabs have no margin
+              totalMargin = parseInt($li.css('margin-left'), 10) + parseInt($li.css('margin-right'), 10);
+            }
+
+            stc.movableContainerWidth += ($li.outerWidth() + totalMargin);
+          });
+
+          stc.movableContainerWidth += 1;
+
+          // if the tabs don't span the width of the page, force the
+          // movable container width to full page width so the bottom
+          // border spans the page width instead of just spanning the
+          // width of the tabs
+          if (stc.movableContainerWidth < stc.fixedContainerWidth) {
+            stc.movableContainerWidth = stc.fixedContainerWidth;
           }
+        }
 
-          stc.movableContainerWidth += ($li.outerWidth() + totalMargin);
-        });
-
-        stc.$movableContainer.width(stc.movableContainerWidth += 1);
+        stc.$movableContainer.width(stc.movableContainerWidth);
       };
 
       p.setScrollArrowVisibility = function () {
@@ -639,7 +661,7 @@
 
         if (!actionsTaken.didScrollToActiveTab) {
           scrollMovement.scrollToActiveTab({
-            isOnTabsRefresh: options.isWatchingTabsArray
+            isOnTabsRefresh: options.isWatchingTabs
           });
         }
 
@@ -762,7 +784,7 @@
 
           scrollingTabsControl.initTabs({
             isWrapperDirective: false,
-            isWatchingTabsArray: true,
+            isWatchingTabs: true,
             scrollToTabEdge: scrollToTabEdge
           });
 
@@ -791,16 +813,54 @@
               isWrappingAngularUITabset = element.find('tabset').length > 0,
               scrollToTabEdge = attrs.scrollToTabEdge && attrs.scrollToTabEdge.toLowerCase() === 'true';
 
-
           if (!attrs.watchTabs) {
-
-            // we don't need to watch the tabs array for changes, so just
+            // we don't need to watch the tabs for changes, so just
             // init the tabs control and return
             scrollingTabsControl.initTabs({
               isWrapperDirective: true,
               isWrappingAngularUITabset: isWrappingAngularUITabset,
               scrollToTabEdge: scrollToTabEdge
             });
+
+            return;
+          }
+
+
+          if (attrs.watchTabs.toLowerCase() === 'true') {
+            // if we're watching the tabs html for changes, init
+            // them then set up a watch that watches for changes
+            // to the number of tabs or to the active tab
+            scrollingTabsControl.initTabs({
+              isWrapperDirective: true,
+              isWrappingAngularUITabset: isWrappingAngularUITabset,
+              isWatchingTabs: true,
+              scrollToTabEdge: scrollToTabEdge
+            });
+
+            // give the DOM changes time to process, then set up our watch
+            $timeout(function() {
+              var $navTabs = element.find('ul.nav-tabs');
+
+              if (!$navTabs.length) {
+                return;
+              }
+
+              // watch for a change in the number of tabs or the active tab
+              scope.$watch(
+                function() {
+                  return ($navTabs[0].childNodes.length + $navTabs.find('li.active').index());
+                }, function (newVal, oldVal) {
+
+                  scrollingTabsControl.initTabs({
+                    isWrapperDirective: true,
+                    isWrappingAngularUITabset: isWrappingAngularUITabset,
+                    isWatchingTabs: true,
+                    scrollToTabEdge: scrollToTabEdge
+                  });
+
+                });
+
+            }, 10);
 
             return;
           }
@@ -840,7 +900,7 @@
             scrollingTabsControl.initTabs({
               isWrapperDirective: true,
               isWrappingAngularUITabset: isWrappingAngularUITabset,
-              isWatchingTabsArray: true,
+              isWatchingTabs: true,
               scrollToTabEdge: scrollToTabEdge
             });
 
