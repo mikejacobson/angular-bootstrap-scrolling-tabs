@@ -3,7 +3,7 @@
 
   /**
    * angular-bootstrap-scrolling-tabs
-   * @version v0.0.19
+   * @version v0.0.20
    * @link https://github.com/mikejacobson/angular-bootstrap-scrolling-tabs
    * @author Mike Jacobson <michaeljjacobson1@gmail.com>
    * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -826,45 +826,21 @@
           }
 
 
+          // ----- watch the tabs DOM for changes --------------
           if (attrs.watchTabs.toLowerCase() === 'true') {
-            // if we're watching the tabs html for changes, init
+            // we're watching the tabs html for changes,  so init
             // them then set up a watch that watches for changes
             // to the number of tabs or to the active tab
-            scrollingTabsControl.initTabs({
-              isWrapperDirective: true,
-              isWrappingAngularUITabset: isWrappingAngularUITabset,
-              isWatchingTabs: true,
-              scrollToTabEdge: scrollToTabEdge
-            });
+            initTabsAsWrapperWatchingTabs();
 
             // give the DOM changes time to process, then set up our watch
-            $timeout(function() {
-              var $navTabs = element.find('ul.nav-tabs');
-
-              if (!$navTabs.length) {
-                return;
-              }
-
-              // watch for a change in the number of tabs or the active tab
-              scope.$watch(
-                function() {
-                  return ($navTabs[0].childNodes.length + $navTabs.find('li.active').index());
-                }, function (newVal, oldVal) {
-
-                  scrollingTabsControl.initTabs({
-                    isWrapperDirective: true,
-                    isWrappingAngularUITabset: isWrappingAngularUITabset,
-                    isWatchingTabs: true,
-                    scrollToTabEdge: scrollToTabEdge
-                  });
-
-                });
-
-            }, 10);
+            $timeout(watchForTabDomChanges, 10);
 
             return;
           }
 
+
+          // ----- watch the tabs array for changes --------------
           // watch the tabs array for changes and refresh the tabs
           // control any time it changes (whether the change is a
           // new tab or just a change in which tab is selected)
@@ -897,14 +873,68 @@
 
             }
 
+            initTabsAsWrapperWatchingTabs();
+
+          }, true);
+
+
+          function initTabsAsWrapperWatchingTabs() {
             scrollingTabsControl.initTabs({
               isWrapperDirective: true,
               isWrappingAngularUITabset: isWrappingAngularUITabset,
               isWatchingTabs: true,
               scrollToTabEdge: scrollToTabEdge
             });
+          }
 
-          }, true);
+          function watchForTabDomChanges() {
+              var $navTabs = element.find('ul.nav-tabs'),
+                  currActiveTabIdx,
+                  showingActiveTabIdx;
+
+              if (!$navTabs.length) {
+                return;
+              }
+
+              // ---- watch for tabs being added or removed ----
+              scope.$watch(function () {
+                return $navTabs[0].childNodes.length;
+              }, function (newVal, oldVal) {
+                  if (newVal !== oldVal) {
+                    initTabsAsWrapperWatchingTabs();
+                  }
+              });
+
+              // ---- watch for a change in the active tab ----
+              // we can't just use the built-in watch functionality
+              // to check for a change in the active tab because the
+              // function we pass to $watch sometimes executes before the
+              // active class changes to the newly-clicked tab, so our watch
+              // doesn't detect any change; to detect the change, we need
+              // to perform the check after a timeout, so we just hook
+              // into the $watch because we need to perform the check
+              // when a digest occurs, but we don't use the $watch's
+              // callback to make any changes, we just do it in our
+              // timeout function.
+              scope.$watch(function () {
+                // pass false as 3rd arg so digest is not initiated,
+                // otherwise we end up in infinite loop
+                $timeout(checkForActiveTabChange, 0, false);
+                return $navTabs.find('li.active').index();
+              }, angular.noop);
+
+
+              function checkForActiveTabChange() {
+                currActiveTabIdx = $navTabs.find('li.active').index();
+
+                if (currActiveTabIdx !== showingActiveTabIdx) {
+                  showingActiveTabIdx = currActiveTabIdx;
+                  initTabsAsWrapperWatchingTabs();
+                }
+
+                return false;
+              }
+          }
 
         }
       };
