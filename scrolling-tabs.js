@@ -810,7 +810,7 @@
         replace: true,
         link: function(scope, element, attrs) {
           var scrollingTabsControl = new ScrollingTabsControl(element, $timeout),
-              isWrappingAngularUITabset = element.find('tabset').length > 0,
+              isWrappingAngularUITabset = element.find('tabset, uib-tabset').length > 0,
               scrollToTabEdge = attrs.scrollToTabEdge && attrs.scrollToTabEdge.toLowerCase() === 'true';
 
           if (!attrs.watchTabs) {
