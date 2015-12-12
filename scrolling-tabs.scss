@@ -23,6 +23,9 @@ $background-color-bootstrap-gray-hover: rgb(238, 238, 238);
 
 .scrtabs-tabs-movable-container {
   position: relative;
+  .tab-content {
+    display: none;
+  }
 }
 
 .scrtabs-tab-scroll-arrow {
@@ -49,6 +52,8 @@ $background-color-bootstrap-gray-hover: rgb(238, 238, 238);
   }
 }
 
-.scrtabs-tab-content-hidden {
-  display: none;
+.scrtabs-tab-content-outside-movable-container {
+  .nav-tabs {
+    display: none;
+  }
 }

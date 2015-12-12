@@ -1,13 +1,12 @@
+/**
+ * angular-bootstrap-scrolling-tabs
+ * @version v0.0.22
+ * @link https://github.com/mikejacobson/angular-bootstrap-scrolling-tabs
+ * @author Mike Jacobson <michaeljjacobson1@gmail.com>
+ * @license MIT License, http://www.opensource.org/licenses/MIT
+ */
 ;(function () {
   'use strict';
-
-  /**
-   * angular-bootstrap-scrolling-tabs
-   * @version v0.0.20
-   * @link https://github.com/mikejacobson/angular-bootstrap-scrolling-tabs
-   * @author Mike Jacobson <michaeljjacobson1@gmail.com>
-   * @license MIT License, http://www.opensource.org/licenses/MIT
-   */
 
   var CONSTANTS = {
     CONTINUOUS_SCROLLING_TIMEOUT_INTERVAL: 50, // timeout interval for repeatedly moving the tabs container
@@ -57,6 +56,7 @@
     '     <div class="scrtabs-tabs-movable-container" ng-transclude></div>',
     '   </div>',
     ' <div class="scrtabs-tab-scroll-arrow scrtabs-js-tab-scroll-arrow-right"><span class="glyphicon glyphicon-chevron-right"></span></div>',
+    ' <div class="scrtabs-tab-content-outside-movable-container" ng-transclude></div>',
     '</div>'
   ].join('');
 
@@ -179,7 +179,7 @@
 
         ehd.setElementReferences();
 
-        if (options.isWrappingAngularUITabset) {
+        if (options.isWrappingAngularUITabset && options.isWatchingDom) {
           ehd.moveTabContentOutsideScrollContainer(options);
         }
 
@@ -191,15 +191,14 @@
             stc = ehd.stc,
             $tabsContainer = stc.$tabsContainer,
             tabContentCloneCssClass = 'scrtabs-tab-content-clone',
-            tabContentHiddenCssClass = 'scrtabs-tab-content-hidden',
-            $tabContent = $tabsContainer.find('.tab-content').not('.' + tabContentCloneCssClass),
+            $tabContentInMovableContainer = $tabsContainer.find('.scrtabs-tabs-movable-container .tab-content'),
             $currTcClone,
             $newTcClone;
 
         // if the tabs won't be changing, we can just move the
         // the .tab-content outside the scrolling container right now
         if (!options.isWatchingTabs) {
-          $tabContent.appendTo($tabsContainer);
+          $tabContentInMovableContainer.show().appendTo($tabsContainer);
           return;
         }
 
@@ -212,15 +211,9 @@
          * which will be the visible .tab-content.
          */
 
-        // hide the original .tab-content if it's not already hidden
-        if (!$tabContent.hasClass(tabContentHiddenCssClass)) {
-          $tabContent.addClass(tabContentHiddenCssClass);
-        }
-
         // create new clone
-        $newTcClone = $tabContent
+        $newTcClone = $tabContentInMovableContainer
                         .clone()
-                        .removeClass(tabContentHiddenCssClass)
                         .addClass(tabContentCloneCssClass);
 
         // get the current clone, if it exists
@@ -279,6 +272,14 @@
         return actionsTaken;
       };
 
+      p.removeTranscludedTabContentOutsideMovableContainer = function () {
+        var ehd = this,
+            stc = ehd.stc,
+            $tabsContainer = stc.$tabsContainer;
+
+        $tabsContainer.find('.scrtabs-tab-content-outside-movable-container').remove();
+      };
+
       p.setElementReferences = function () {
         var ehd = this,
             stc = ehd.stc,
@@ -288,11 +289,11 @@
 
         stc.$fixedContainer = $tabsContainer.find('.scrtabs-tabs-fixed-container');
         stc.$movableContainer = $tabsContainer.find('.scrtabs-tabs-movable-container');
-        stc.$tabsUl = $tabsContainer.find('.nav-tabs');
+        stc.$tabsUl = stc.$movableContainer.find('.nav-tabs');
 
         // check for pills
         if (!stc.$tabsUl.length) {
-          stc.$tabsUl = $tabsContainer.find('.nav-pills');
+          stc.$tabsUl = stc.$movableContainer.find('.nav-pills');
 
           if (stc.$tabsUl.length) {
             stc.isNavPills = true;
@@ -669,6 +670,13 @@
       }, 100);
     };
 
+    p.removeTranscludedTabContentOutsideMovableContainer = function() {
+      var stc = this,
+          elementsHandler = stc.elementsHandler;
+
+      elementsHandler.removeTranscludedTabContentOutsideMovableContainer();
+    };
+
 
   }(ScrollingTabsControl.prototype));
 
@@ -813,6 +821,10 @@
               isWrappingAngularUITabset = element.find('tabset, uib-tabset').length > 0,
               scrollToTabEdge = attrs.scrollToTabEdge && attrs.scrollToTabEdge.toLowerCase() === 'true';
 
+          if (!isWrappingAngularUITabset) {
+            scrollingTabsControl.removeTranscludedTabContentOutsideMovableContainer();
+          }
+
           if (!attrs.watchTabs) {
             // we don't need to watch the tabs for changes, so just
             // init the tabs control and return
@@ -828,8 +840,13 @@
 
           // ----- watch the tabs DOM for changes --------------
           if (attrs.watchTabs.toLowerCase() === 'true') {
-            // we're watching the tabs html for changes,  so init
-            // them then set up a watch that watches for changes
+
+            if (isWrappingAngularUITabset) {
+              scrollingTabsControl.removeTranscludedTabContentOutsideMovableContainer();
+            }
+
+            // we're watching the tabs html (rather than array) for changes,
+            // so init them then set up a watch that watches for changes
             // to the number of tabs or to the active tab
             initTabsAsWrapperWatchingTabs();
 
@@ -878,12 +895,13 @@
           }, true);
 
 
-          function initTabsAsWrapperWatchingTabs() {
+          function initTabsAsWrapperWatchingTabs(options) {
             scrollingTabsControl.initTabs({
               isWrapperDirective: true,
               isWrappingAngularUITabset: isWrappingAngularUITabset,
               isWatchingTabs: true,
-              scrollToTabEdge: scrollToTabEdge
+              scrollToTabEdge: scrollToTabEdge,
+              isWatchingDom: options && options.isWatchingDom
             });
           }
 
@@ -901,7 +919,9 @@
                 return $navTabs[0].childNodes.length;
               }, function (newVal, oldVal) {
                   if (newVal !== oldVal) {
-                    initTabsAsWrapperWatchingTabs();
+                    initTabsAsWrapperWatchingTabs({
+                      isWatchingDom: true
+                    });
                   }
               });
 
@@ -929,7 +949,9 @@
 
                 if (currActiveTabIdx !== showingActiveTabIdx) {
                   showingActiveTabIdx = currActiveTabIdx;
-                  initTabsAsWrapperWatchingTabs();
+                  initTabsAsWrapperWatchingTabs({
+                    isWatchingDom: true
+                  });
                 }
 
                 return false;

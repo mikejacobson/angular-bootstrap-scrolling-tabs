@@ -1,3 +1,10 @@
+/**
+ * angular-bootstrap-scrolling-tabs
+ * @version v0.0.22
+ * @link https://github.com/mikejacobson/angular-bootstrap-scrolling-tabs
+ * @author Mike Jacobson <michaeljjacobson1@gmail.com>
+ * @license MIT License, http://www.opensource.org/licenses/MIT
+ */
 /* line 6, scrolling-tabs.scss */
 .scrtabs-tab-container * {
   box-sizing: border-box;
@@ -24,8 +31,12 @@
 .scrtabs-tabs-movable-container {
   position: relative;
 }
+/* line 26, scrolling-tabs.scss */
+.scrtabs-tabs-movable-container .tab-content {
+  display: none;
+}
 
-/* line 28, scrolling-tabs.scss */
+/* line 31, scrolling-tabs.scss */
 .scrtabs-tab-scroll-arrow {
   border: 1px solid #dddddd;
   border-top: none;
@@ -39,21 +50,21 @@
   padding-top: 13px;
   width: 20px;
 }
-/* line 40, scrolling-tabs.scss */
+/* line 43, scrolling-tabs.scss */
 .scrtabs-tab-scroll-arrow:hover {
   background-color: #eeeeee;
 }
 
-/* line 45, scrolling-tabs.scss */
+/* line 48, scrolling-tabs.scss */
 .scrtabs-tabs-fixed-container ul.nav-tabs {
   height: 41px;
 }
-/* line 47, scrolling-tabs.scss */
+/* line 50, scrolling-tabs.scss */
 .scrtabs-tabs-fixed-container ul.nav-tabs > li {
   white-space: nowrap;
 }
 
-/* line 52, scrolling-tabs.scss */
-.scrtabs-tab-content-hidden {
+/* line 56, scrolling-tabs.scss */
+.scrtabs-tab-content-outside-movable-container .nav-tabs {
   display: none;
 }
