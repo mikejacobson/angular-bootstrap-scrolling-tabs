@@ -1,6 +1,6 @@
 {
   "name": "angular-bootstrap-scrolling-tabs",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "description": "Angular directive for scrollable Bootstrap Tabs",
   "homepage": "https://github.com/mikejacobson/angular-bootstrap-scrolling-tabs",
   "bugs": "https://github.com/mikejacobson/angular-bootstrap-scrolling-tabs/issues",
