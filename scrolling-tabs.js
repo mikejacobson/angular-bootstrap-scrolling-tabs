@@ -1,6 +1,6 @@
 /**
  * angular-bootstrap-scrolling-tabs
- * @version v0.0.23
+ * @version v0.0.24
  * @link https://github.com/mikejacobson/angular-bootstrap-scrolling-tabs
  * @author Mike Jacobson <michaeljjacobson1@gmail.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -50,7 +50,7 @@
    * *************************************************************/
   // plunk: http://plnkr.co/edit/lWeQxxecKPudK7xlQxS3
   scrollingTabsWrapperTemplate = [
-    '<div class="scrtabs-tab-container">',
+    '<div class="scrtabs-tab-wrapper-container" ng-class="{ \'force-height\': !vm.hasTabContentOutsideMovableContainer }">',
     ' <div class="scrtabs-tab-scroll-arrow scrtabs-js-tab-scroll-arrow-left"><span class="glyphicon glyphicon-chevron-left"></span></div>',
     '   <div class="scrtabs-tabs-fixed-container">',
     '     <div class="scrtabs-tabs-movable-container" ng-transclude></div>',
@@ -819,10 +819,16 @@
         link: function(scope, element, attrs) {
           var scrollingTabsControl = new ScrollingTabsControl(element, $timeout),
               isWrappingAngularUITabset = element.find('tabset, uib-tabset, .scrtabs-tabs-movable-container .ng-isolate-scope > ul.nav').length > 0,
-              scrollToTabEdge = attrs.scrollToTabEdge && attrs.scrollToTabEdge.toLowerCase() === 'true';
+              scrollToTabEdge = attrs.scrollToTabEdge && attrs.scrollToTabEdge.toLowerCase() === 'true',
+              vm = {
+                hasTabContentOutsideMovableContainer: true
+              };
+
+          angular.extend(scope, { vm: vm });
 
           if (!isWrappingAngularUITabset) {
             scrollingTabsControl.removeTranscludedTabContentOutsideMovableContainer();
+            vm.hasTabContentOutsideMovableContainer = false;
           }
 
           if (!attrs.watchTabs) {
@@ -843,6 +849,7 @@
 
             if (isWrappingAngularUITabset) {
               scrollingTabsControl.removeTranscludedTabContentOutsideMovableContainer();
+              vm.hasTabContentOutsideMovableContainer = false;
             }
 
             // we're watching the tabs html (rather than array) for changes,
