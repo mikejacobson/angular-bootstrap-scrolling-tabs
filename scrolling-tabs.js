@@ -1,6 +1,6 @@
 /**
  * angular-bootstrap-scrolling-tabs
- * @version v0.0.24
+ * @version v0.0.25
  * @link https://github.com/mikejacobson/angular-bootstrap-scrolling-tabs
  * @author Mike Jacobson <michaeljjacobson1@gmail.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -818,7 +818,8 @@
         replace: true,
         link: function(scope, element, attrs) {
           var scrollingTabsControl = new ScrollingTabsControl(element, $timeout),
-              isWrappingAngularUITabset = element.find('tabset, uib-tabset, .scrtabs-tabs-movable-container .ng-isolate-scope > ul.nav').length > 0,
+              isWrappingAngularUIBTabset = element.find('uib-tabset').length > 0,
+              isWrappingAngularUITabset = isWrappingAngularUIBTabset || element.find('tabset, .scrtabs-tabs-movable-container .ng-isolate-scope > ul.nav').length > 0,
               scrollToTabEdge = attrs.scrollToTabEdge && attrs.scrollToTabEdge.toLowerCase() === 'true',
               vm = {
                 hasTabContentOutsideMovableContainer: true
@@ -831,7 +832,7 @@
             vm.hasTabContentOutsideMovableContainer = false;
           }
 
-          if (!attrs.watchTabs) {
+          if (!isWrappingAngularUIBTabset && !attrs.watchTabs) {
             // we don't need to watch the tabs for changes, so just
             // init the tabs control and return
             scrollingTabsControl.initTabs({
@@ -845,7 +846,20 @@
 
 
           // ----- watch the tabs DOM for changes --------------
-          if (attrs.watchTabs.toLowerCase() === 'true') {
+          // if we're watching angular uib-tabset after version 1.2.0, we
+          // need to explicitly watch the tabs for DOM changes because
+          // from 1.2.0, they added controllerAs and bindToController,
+          // which messed up the direct connection between the tabs
+          // model data and the transcluded DOM that allowed the tab-content
+          // outside the movable container to update itself when the
+          // active tab inside the movable container changed.
+          // So if we're watching uib-tabset AND there is not a watch-tabs
+          // attribute pointing to the tabs array, we set up this watch,
+          // just watching for the active tab to change.
+          // We also set up this watch if there's a watch-tabs="true"
+          // attribute.
+          if (isWrappingAngularUIBTabset ||
+              (attrs.watchTabs && attrs.watchTabs.toLowerCase() === 'true')) {
 
             if (isWrappingAngularUITabset) {
               scrollingTabsControl.removeTranscludedTabContentOutsideMovableContainer();
@@ -860,7 +874,12 @@
             // give the DOM changes time to process, then set up our watch
             $timeout(watchForTabDomChanges, 10);
 
-            return;
+            // we can return out of here UNLESS we're wrapping uib-tabset AND
+            // also watching the tabs array for changes, in which case we need
+            // to continue on and set up the watch on the tabs array.
+            if (!isWrappingAngularUIBTabset || !attrs.watchTabs || attrs.watchTabs.toLowerCase() === 'true') {
+              return;
+            }
           }
 
 
@@ -878,7 +897,6 @@
               // we need to deactivate whatever the currently active tab is,
               // and we have no way of knowing that from the state of the tabs
               // array--we need to check the tab elements on the page
-
               // listen for tab clicks and update our tabs array accordingly because
               // bootstrap doesn't do that
               if (latestTabsArray.length && latestTabsArray[latestTabsArray.length - 1].active) {
@@ -893,6 +911,14 @@
 
                 }, 0);
 
+              }
+
+            } else if (isWrappingAngularUIBTabset) {
+
+              if (latestTabsArray.length && latestTabsArray[latestTabsArray.length - 1].active) {
+                $timeout(function () {
+                  element.find('.scrtabs-tabs-movable-container ul.nav-tabs > li:last').find('a[role="tab"],a.nav-link').click();
+                }, 0);
               }
 
             }
