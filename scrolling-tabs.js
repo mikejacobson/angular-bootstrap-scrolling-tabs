@@ -1,6 +1,6 @@
 /**
  * angular-bootstrap-scrolling-tabs
- * @version v0.0.25
+ * @version v0.0.26
  * @link https://github.com/mikejacobson/angular-bootstrap-scrolling-tabs
  * @author Mike Jacobson <michaeljjacobson1@gmail.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -366,7 +366,9 @@
       p.setMovableContainerWidth = function () {
         var ehd = this,
             stc = ehd.stc,
-            $tabLi = stc.$tabsUl.find('li');
+            $tabLi = stc.$tabsUl.find('li'),
+            fixedContainerHeight = stc.$fixedContainer.height(),
+            maxWidthExpansions = 10; // prevent infinite loop
 
         stc.movableContainerWidth = 0;
 
@@ -395,6 +397,20 @@
         }
 
         stc.$movableContainer.width(stc.movableContainerWidth);
+
+        // when we have >35 pills, sometimes the movable container width ends
+        // up being a pixel short, causing the last pill to wrap; so we do
+        // this check for a wrapped pill--we check if the movable container
+        // height has expanded beyond the fixed container height (indicating
+        // a wrapped pill), and if it has, we increase the movable container
+        // width 1 pixel at a time until there's no wrap. We also put a
+        // limit on the number of checks/expansions to prevent an infinite
+        // loop, in case we get into some weird situation where adding width
+        // never fixes the wrap.
+        while ((stc.$movableContainer.height() > fixedContainerHeight) && maxWidthExpansions--) {
+          stc.$movableContainer.width(stc.movableContainerWidth += 1);
+        }
+
       };
 
       p.setScrollArrowVisibility = function () {

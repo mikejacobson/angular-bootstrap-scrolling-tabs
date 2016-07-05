@@ -10,10 +10,10 @@ Here's what they look like:
 
 And here are plunks showing them working with:
 
-* <a href="http://plnkr.co/edit/wx9JfgGTRi06f1wY3pmP?p=preview" target="_blank">Bootstrap 3 Tabs (and Pills)</a>
-* <a href="http://plnkr.co/edit/YVWwiTIls5nZmTVWwpXA?p=preview" target="_blank">AngularUI Bootstrap Tabs</a>
-* <a href="http://plnkr.co/edit/1w2Pb67phVHHzmbpokRx?p=preview" target="_blank">Bootstrap 3 Tabs with tabs added dynamically after page load</a>
-* <a href="http://plnkr.co/edit/giluLLv6VY5ON0A6HFna?p=preview" target="_blank">AngularUI Bootstrap Tabs with tabs added dynamically after page load</a>
+* <a href="http://plnkr.co/edit/43XQ0AkouE23UcTUJvIK?p=preview" target="_blank">Bootstrap 3 Tabs (and Pills)</a>
+* <a href="http://plnkr.co/edit/jfuuLlIK32dTG5eXq3ip?p=preview" target="_blank">AngularUI Bootstrap Tabs</a>
+* <a href="http://plnkr.co/edit/mV5ImxkQK4mnDJb88h0B?p=preview" target="_blank">Bootstrap 3 Tabs with tabs added dynamically after page load</a>
+* <a href="http://plnkr.co/edit/d3KuB1x15HXHIAMqOWFi?p=preview" target="_blank">AngularUI Bootstrap Tabs with tabs added dynamically after page load</a>
 
 Use Cases
 ---------
