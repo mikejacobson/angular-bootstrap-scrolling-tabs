@@ -5,10 +5,6 @@
   "homepage": "https://github.com/mikejacobson/angular-bootstrap-scrolling-tabs",
   "bugs": "https://github.com/mikejacobson/angular-bootstrap-scrolling-tabs/issues",
   "author": "Mike Jacobson <michaeljjacobson1@gmail.com>",
-  "main": [
-    "scrolling-tabs.js",
-    "scrolling-tabs.css"
-  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/mikejacobson/angular-bootstrap-scrolling-tabs.git"
