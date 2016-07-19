@@ -1,6 +1,6 @@
 /**
  * angular-bootstrap-scrolling-tabs
- * @version v0.0.27
+ * @version v0.0.28
  * @link https://github.com/mikejacobson/angular-bootstrap-scrolling-tabs
  * @author Mike Jacobson <michaeljjacobson1@gmail.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -56,7 +56,6 @@
     '     <div class="scrtabs-tabs-movable-container" ng-transclude></div>',
     '   </div>',
     ' <div class="scrtabs-tab-scroll-arrow scrtabs-js-tab-scroll-arrow-right"><span class="glyphicon glyphicon-chevron-right"></span></div>',
-    ' <div class="scrtabs-tab-content-outside-movable-container" ng-transclude></div>',
     '</div>'
   ].join('');
 
@@ -179,7 +178,7 @@
 
         ehd.setElementReferences();
 
-        if (options.isWrappingAngularUITabset && options.isWatchingDom) {
+        if (options.isWrappingAngularUITabset) {
           ehd.moveTabContentOutsideScrollContainer(options);
         }
 
