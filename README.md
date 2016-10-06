@@ -53,6 +53,7 @@ There are two directives to choose from, depending on your application:
 
 `scrolling-tabs-wrapper` is an attribute directive that *wraps* either a standard Bootstrap `ul.nav-tabs` element or an AngularUI Bootstrap `tabset` element.
 
+Note: Similar to [Bootstrap tabs](http://getbootstrap.com/javascript/#tabs), nested tabs are not supported.
 
 Use Cases
 ---------
