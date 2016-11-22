@@ -1,11 +1,11 @@
 /**
  * angular-bootstrap-scrolling-tabs
- * @version v0.0.29
+ * @version v0.0.30
  * @link https://github.com/mikejacobson/angular-bootstrap-scrolling-tabs
  * @author Mike Jacobson <michaeljjacobson1@gmail.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
  */
-;(function () {
+;(function ($) {
   'use strict';
 
   var CONSTANTS = {
@@ -1018,4 +1018,4 @@
   scrollingTabsModule.directive('scrollingTabs', scrollingTabsDirective);
   scrollingTabsModule.directive('scrollingTabsWrapper', scrollingTabsWrapperDirective);
 
-}());
+}(jQuery));
