@@ -1,6 +1,6 @@
 /**
  * angular-bootstrap-scrolling-tabs
- * @version v0.0.30
+ * @version v0.0.31
  * @link https://github.com/mikejacobson/angular-bootstrap-scrolling-tabs
  * @author Mike Jacobson <michaeljjacobson1@gmail.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -650,7 +650,7 @@
     stc.$timeout = $timeout;
 
     stc.movableContainerLeftPos = 0;
-    stc.scrollArrowsVisible = true;
+    stc.scrollArrowsVisible = false;
     stc.scrollToTabEdge = false;
 
     stc.scrollMovement = new ScrollMovement(stc);
