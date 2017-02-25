@@ -28,6 +28,7 @@ Optional Features
 There are also some optional features available:
 * [Support Adding Tabs Dynamically After Page Load](#ft1)
 * [Force Scroll to Tab Edge](#ft2)
+* [Force Refresh of Tab Container](#refreshOn)
 
 
 
@@ -214,6 +215,20 @@ If you want to ensure the scrolling always ends with a tab edge aligned with the
 ```
 
 There's no way to guarantee the left *and* right edges will be full tabs because that's dependent on the the width of the tabs and the window. So this just makes sure the left side will be a full tab.
+
+
+#### <a id="refreshOn"></a>Force Refresh of Tabs Container
+
+You can use the `refresh-on` attribute to force a refresh of the tabs container. If, for example, you will be programmatically changing the size of the container, the tabs container will need to know that it should resize itself.
+
+```html
+<scrolling-tabs tabs="{{main.tabs}}"
+                refresh-on="main.forceRefresh"
+```
+
+```html
+<div scrolling-tabs-wrapper refresh-on="main.forceRefresh">
+```
 
 
 
