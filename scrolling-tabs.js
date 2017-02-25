@@ -1,6 +1,6 @@
 /**
  * angular-bootstrap-scrolling-tabs
- * @version v0.0.31
+ * @version v0.1.0
  * @link https://github.com/mikejacobson/angular-bootstrap-scrolling-tabs
  * @author Mike Jacobson <michaeljjacobson1@gmail.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -311,6 +311,10 @@
         var ehd = this,
             stc = ehd.stc;
 
+        if (!stc.$win) {
+          return;
+        }
+
         stc.containerWidth = stc.$tabsContainer.outerWidth();
         stc.winWidth = stc.$win.width();
 
@@ -326,26 +330,27 @@
             evh = stc.eventHandlers; // eventHandlers
 
         stc.$leftScrollArrow.off('.scrtabs').on({
-          'mousedown.scrtabs': function (e) { evh.handleMousedownOnLeftScrollArrow.call(evh, e); },
-          'mouseup.scrtabs': function (e) { evh.handleMouseupOnLeftScrollArrow.call(evh, e); },
+          'mousedown.scrtabs touchstart.scrtabs': function (e) { evh.handleMousedownOnLeftScrollArrow.call(evh, e); },
+          'mouseup.scrtabs touchend.scrtabs': function (e) { evh.handleMouseupOnLeftScrollArrow.call(evh, e); },
           'click.scrtabs': function (e) { evh.handleClickOnLeftScrollArrow.call(evh, e); }
         });
 
         stc.$rightScrollArrow.off('.scrtabs').on({
-          'mousedown.scrtabs': function (e) { evh.handleMousedownOnRightScrollArrow.call(evh, e); },
-          'mouseup.scrtabs': function (e) { evh.handleMouseupOnRightScrollArrow.call(evh, e); },
+          'mousedown.scrtabs touchstart.scrtabs': function (e) { evh.handleMousedownOnRightScrollArrow.call(evh, e); },
+          'mouseup.scrtabs touchend.scrtabs': function (e) { evh.handleMouseupOnRightScrollArrow.call(evh, e); },
           'click.scrtabs': function (e) { evh.handleClickOnRightScrollArrow.call(evh, e); }
         });
 
-        stc.$win.smartresize(function (e) { evh.handleWindowResize.call(evh, e); });
-
+        stc.$win.off('.scrtabs').smartresize(function (e) { evh.handleWindowResize.call(evh, e); });
       };
 
       p.setFixedContainerWidth = function () {
         var ehd = this,
-            stc = ehd.stc;
+            stc = ehd.stc,
+            tabsContainerRect = stc.$tabsContainer.get(0).getBoundingClientRect();
 
-        stc.$fixedContainer.width(stc.fixedContainerWidth = stc.$tabsContainer.outerWidth());
+        stc.fixedContainerWidth = tabsContainerRect.width || (tabsContainerRect.right - tabsContainerRect.left);
+        stc.$fixedContainer.width(stc.fixedContainerWidth);
       };
 
       p.setFixedContainerWidthForJustHiddenScrollArrows = function () {
@@ -685,6 +690,12 @@
       }, 100);
     };
 
+    p.refreshSizes = function () {
+      var stc = this;
+
+      stc.elementsHandler.refreshAllElementSizes(true);
+    };
+
     p.removeTranscludedTabContentOutsideMovableContainer = function() {
       var stc = this,
           elementsHandler = stc.elementsHandler;
@@ -721,7 +732,8 @@
         propTitle: '@',
         propActive: '@',
         propDisabled: '@',
-        localTabClick: '&tabClick'
+        localTabClick: '&tabClick',
+        refreshOn: '='
       },
       link: function(scope, element, attrs) {
         var scrollingTabsControl = new ScrollingTabsControl(element, $timeout),
@@ -745,6 +757,14 @@
           });
 
         });
+
+        if (attrs.refreshOn) {
+          scope.$watch('refreshOn', function (newVal, oldVal) {
+            if (newVal && newVal !== oldVal) {
+              scrollingTabsControl.refreshSizes();
+            }
+          });
+        }
 
         if (!attrs.watchTabs) {
 
@@ -841,6 +861,14 @@
               };
 
           angular.extend(scope, { scrtc: scrtc });
+
+          if (attrs.refreshOn) {
+            scope.$watch(attrs.refreshOn, function (newVal, oldVal) {
+              if (newVal && newVal !== oldVal) {
+                scrollingTabsControl.refreshSizes();
+              }
+            });
+          }
 
           if (!isWrappingAngularUITabset) {
             scrollingTabsControl.removeTranscludedTabContentOutsideMovableContainer();
