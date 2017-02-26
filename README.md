@@ -219,7 +219,7 @@ There's no way to guarantee the left *and* right edges will be full tabs because
 
 #### <a id="refreshOn"></a>Force Refresh of Tabs Container
 
-You can use the `refresh-on` attribute to force a refresh of the tabs container sizing. If, for example, you will be programmatically changing the size of the container, the tabs container will need to know that it should resize itself.
+You can use the `refresh-on` attribute to force a refresh of the tabs container sizing (along with an automatic scroll to the active tab if it's not in view after the resize). If, for example, you will be programmatically changing the size of the container&mdash;and therefore no window resize event will trigger&mdash;the tabs container will need to be told that it should resize its various components.
 
 ```html
 <scrolling-tabs tabs="{{main.tabs}}"
