@@ -542,7 +542,6 @@
       var smv = this,
           stc = smv.stc,
           offset = 0,
-          needToSlide = false,
           $activeTab,
           activeTabWidth,
           activeTabLeftPos,
@@ -576,15 +575,12 @@
       if (activeTabLeftPos < visibleAreaLeftPos) {
         offset = activeTabLeftPos - visibleAreaLeftPos;
         stc.movableContainerLeftPos = stc.movableContainerLeftPos - offset;
-        needToSlide = true;
-
       } else if (activeTabRightPos > visibleAreaRightPos) {
         offset = activeTabRightPos - visibleAreaRightPos;
         stc.movableContainerLeftPos = stc.movableContainerLeftPos - offset;
-        needToSlide=true;
       }
 
-      if (needToSlide) {
+      if (offset) {
         minPos = smv.getMinPos();
 
         if (stc.movableContainerLeftPos < minPos) {
