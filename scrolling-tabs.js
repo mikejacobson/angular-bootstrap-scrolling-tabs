@@ -1,6 +1,6 @@
 /**
  * angular-bootstrap-scrolling-tabs
- * @version v0.1.0
+ * @version v0.1.1
  * @link https://github.com/mikejacobson/angular-bootstrap-scrolling-tabs
  * @author Mike Jacobson <michaeljjacobson1@gmail.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -541,11 +541,17 @@
     p.scrollToActiveTab = function (options) {
       var smv = this,
           stc = smv.stc,
+          offset = 0,
+          needToSlide = false,
           $activeTab,
           activeTabWidth,
           activeTabLeftPos,
+          activeTabRightPos,
           rightArrowLeftPos,
-          overlap;
+          leftArrowRightPos,
+          visibleAreaLeftPos,
+          visibleAreaRightPos,
+          minPos;
 
       // if the active tab is not fully visible, scroll till it is
       if (!stc.scrollArrowsVisible) {
@@ -558,14 +564,35 @@
         return;
       }
 
-      activeTabWidth = $activeTab.outerWidth();
       activeTabLeftPos = $activeTab.offset().left;
+      activeTabWidth = $activeTab.outerWidth();
+      activeTabRightPos = activeTabLeftPos + activeTabWidth;
 
       rightArrowLeftPos = stc.$rightScrollArrow.offset().left;
-      overlap = activeTabLeftPos + activeTabWidth - rightArrowLeftPos;
+      leftArrowRightPos = stc.$leftScrollArrow.outerWidth(); // its leftpos is 0
+      visibleAreaLeftPos = leftArrowRightPos;
+      visibleAreaRightPos = rightArrowLeftPos;
 
-      if (overlap > 0) {
-        stc.movableContainerLeftPos = (options.isOnWindowResize || options.isOnTabsRefresh) ? (stc.movableContainerLeftPos - overlap) : -overlap;
+      if (activeTabLeftPos < visibleAreaLeftPos) {
+        offset = activeTabLeftPos - visibleAreaLeftPos;
+        stc.movableContainerLeftPos = stc.movableContainerLeftPos - offset;
+        needToSlide = true;
+
+      } else if (activeTabRightPos > visibleAreaRightPos) {
+        offset = activeTabRightPos - visibleAreaRightPos;
+        stc.movableContainerLeftPos = stc.movableContainerLeftPos - offset;
+        needToSlide=true;
+      }
+
+      if (needToSlide) {
+        minPos = smv.getMinPos();
+
+        if (stc.movableContainerLeftPos < minPos) {
+          stc.movableContainerLeftPos = minPos;
+        } else if (stc.movableContainerLeftPos > 0) {
+          stc.movableContainerLeftPos = 0;
+        }
+
         smv.slideMovableContainerToLeftPos();
       }
     };
@@ -665,6 +692,20 @@
 
   // prototype methods
   (function (p) {
+    p.handleTriggeredRefresh = function () {
+      var stc = this,
+          scrollMovement = stc.scrollMovement,
+          actionsTaken = stc.elementsHandler.refreshAllElementSizes(true);
+
+      if (!actionsTaken.didScrollToActiveTab) {
+        stc.$timeout(function __scrollToActiveAfterRefreshSizes() {
+          scrollMovement.scrollToActiveTab({
+            isOnTabsRefresh: true
+          });
+        }, 100);
+      }
+    };
+
     p.initTabs = function (options) {
       var stc = this,
           elementsHandler = stc.elementsHandler,
@@ -688,12 +729,6 @@
 
 
       }, 100);
-    };
-
-    p.refreshSizes = function () {
-      var stc = this;
-
-      stc.elementsHandler.refreshAllElementSizes(true);
     };
 
     p.removeTranscludedTabContentOutsideMovableContainer = function() {
@@ -761,7 +796,7 @@
         if (attrs.refreshOn) {
           scope.$watch('refreshOn', function (newVal, oldVal) {
             if (newVal && newVal !== oldVal) {
-              scrollingTabsControl.refreshSizes();
+              scrollingTabsControl.handleTriggeredRefresh();
             }
           });
         }
@@ -865,7 +900,7 @@
           if (attrs.refreshOn) {
             scope.$watch(attrs.refreshOn, function (newVal, oldVal) {
               if (newVal && newVal !== oldVal) {
-                scrollingTabsControl.refreshSizes();
+                scrollingTabsControl.handleTriggeredRefresh();
               }
             });
           }
