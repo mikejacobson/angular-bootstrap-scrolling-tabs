@@ -219,17 +219,40 @@ There's no way to guarantee the left *and* right edges will be full tabs because
 
 #### <a id="refreshOn"></a>Force Refresh of Tabs Container
 
-You can use the `refresh-on` attribute to force a refresh of the tabs container. If, for example, you will be programmatically changing the size of the container, the tabs container will need to know that it should resize itself.
+You can use the `refresh-on` attribute to force a refresh of the tabs container sizing. If, for example, you will be programmatically changing the size of the container, the tabs container will need to know that it should resize itself.
 
 ```html
 <scrolling-tabs tabs="{{main.tabs}}"
-                refresh-on="main.forceRefresh"
+                refresh-on="main.triggerRefresh"
 ```
 
 ```html
-<div scrolling-tabs-wrapper refresh-on="main.forceRefresh">
+<div scrolling-tabs-wrapper refresh-on="main.triggerRefresh">
 ```
 
+If that attribute is present, the directive will set up a `$watch` on that scope property and force a refresh when the property is truthy. So there are different ways you can set it up:
+
+```javascript
+/* Option 1 - use a boolean that will need to get set back to false each
+              time, otherwise the $watch will only trigger the first time
+              you set it to true */
+main.triggerRefresh = false;
+
+function forceARefresh() {
+  main.triggerRefresh = true;
+  $timeout(function() {
+    main.triggerRefresh = false;
+  });
+}
+
+/* Option 2 - use an int and increment it each time */
+main.triggerRefresh = 0;
+
+function forceARefresh() {
+  main.triggerRefresh++;
+}
+
+```
 
 
 License
