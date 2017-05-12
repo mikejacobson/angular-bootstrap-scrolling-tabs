@@ -1,0 +1,14 @@
+<div scrolling-tabs-wrapper watch-tabs="main.identifyData.tabs">
+  <tabset id="tabContent1">
+    <tab ng-repeat="tab in main.identifyData.tabs" heading="{{tab.title}}" active="tab.active">
+      {{tab.title}}
+      <p>
+        <!--a class="a" ng-href="#" ng-click="junk()">Zoom To -->
+        <button type="button" ng-click="main.junk1()"> junk1 click</button>
+      </p>
+      <p>
+        <button type="button" ng-click="main.junk()"> junk click</button>
+      </p>
+    </tab>
+  </tabset>
+</div>

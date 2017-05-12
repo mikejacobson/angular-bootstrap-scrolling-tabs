@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../dist/scrolling-tabs.css">
+
+    <link rel="stylesheet" href="style.css">
+  </head>
+
+  <body>
+
+    <div class="scrolling-tabs-header">Angular Bootstrap Scrolling Tabs</div>
+    <div ng-app="myapp">
+        <div class="scrolling-tabs-container" ng-controller="MainController as main">
+
+          <div class="scrolling-tabs-subheader">
+            <div>scrolling-tabs-wrapper</div>
+
+            <div>Attribute Directive Wrapping AngularUI Tabs
+              <button type="button" ng-click="main.addTab()">Add Tab</button>
+              <button type="button" ng-click="main.rmvTab()">Remove Tab</button>
+              (hasTabContentOutsideMovableContainer)
+            </div>
+
+          </div>
+
+          <div scrolling-tabs-wrapper watch-tabs="main.tabs" scroll-to-tab-edge="true">
+            <tabset>
+              <tab ng-repeat="tab in main.tabs" heading="{{tab.title}}" active="tab.active" disabled="tab.disabled">
+                {{tab.content}}
+              </tab>
+            </tabset>
+          </div>
+
+        </div>
+    </div>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+    <!-- <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script> -->
+    <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.12.0.min.js"></script>
+
+    <script src="../../dist/scrolling-tabs.js"></script>
+
+    <script src="app.js"></script>
+    <script src="MainService.js"></script>
+    <script src="MainController.js"></script>
+  </body>
+
+</html>

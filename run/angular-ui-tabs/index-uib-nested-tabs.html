@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../dist/scrolling-tabs.css">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <div class="scrolling-tabs-header">Angular Bootstrap Scrolling Tabs with click event in content</div>
+  <div ng-app="myapp">
+    <div class="scrolling-tabs-container" ng-controller="MainController as main">
+
+      <div class="scrolling-tabs-subheader">
+        <div>scrolling-tabs-wrapper</div>
+        <div>Attribute Directive Wrapping AngularUI Tabs
+          <button type="button" ng-click="main.addTab()">Add Tab</button>
+        </div>
+      </div>
+
+      <div class="container">
+
+        <div scrolling-tabs-wrapper id="1">
+
+          <uib-tabset>
+
+            <uib-tab index="1" heading="tab1.1">
+              <div class="row">
+                <div class="col-sm-6 col-md-6">
+                  <p>tab1.1left</p>
+                  <p>tab1.1left</p>
+                  <p>tab1.1left</p>
+
+                  <div scrolling-tabs-wrapper id="2">
+
+                    <uib-tabset>
+
+                      <uib-tab index="1" heading="tab2.1">
+                        <div class="row">
+                          <div class="col-sm-6 col-md-6">
+                            <p>tab2.1left</p>
+                            <p>tab2.1left</p>
+                            <p>tab2.1left</p>
+                          </div>
+                          <div class="col-sm-6 col-md-6">
+                            <p>tab2.1right</p>
+                            <p>tab2.1right</p>
+                            <p>tab2.1right</p>
+                          </div>
+                        </div>
+                      </uib-tab>
+
+                      <uib-tab index="2" heading="tab2.2">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <p>tab2.2</p>
+                            <p>tab2.2</p>
+                            <p>tab2.2</p>
+                          </div>
+                        </div>
+                      </uib-tab>
+
+                    </uib-tabset>
+
+                  </div>
+
+                </div>
+                <div class="col-sm-6 col-md-6">
+                  <p>tab1.1right</p>
+                  <p>tab1.1right</p>
+                  <p>tab1.1right</p>
+                  <p>tab1.1right</p>
+                  <p>tab1.1right</p>
+                  <p>tab1.1right</p>
+                  <p>tab1.1right</p>
+                  <p>tab1.1right</p>
+                  <p>tab1.1right</p>
+                </div>
+              </div>
+            </uib-tab>
+
+            <uib-tab index="2" heading="tab1.2">
+              <div class="row">
+                <div class="col-md-12">
+                  <p>tab1.2</p>
+                  <p>tab1.2</p>
+                  <p>tab1.2</p>
+                </div>
+              </div>
+            </uib-tab>
+
+          </uib-tabset>
+
+        </div>
+
+
+      </div>
+
+    </div>
+  </div>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-animate.js"></script>
+  <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-1.3.2.js"></script>
+
+  <script src="../../dist/scrolling-tabs.js"></script>
+
+  <script src="app.js"></script>
+  <script src="MainServiceAddTabs.js"></script>
+  <script src="MainControllerAddTabs.js"></script>
+</body>
+
+</html>
