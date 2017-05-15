@@ -126,7 +126,7 @@ function ScrollMovement(scrollingTabsControl) {
 
     activeTabLeftPos = $activeTab.offset().left;
     activeTabWidth = $activeTab.outerWidth();
-    activeTabRightPos = activeTabLeftPos + activeTabWidth;
+    activeTabRightPos = activeTabLeftPos + activeTabWidth + parseInt(stc.scrollingTabsActiveOffset || 0, 10);
 
     rightArrowLeftPos = stc.$rightScrollArrow.offset().left;
     leftArrowRightPos = stc.$leftScrollArrow.outerWidth(); // its leftpos is 0
@@ -151,6 +151,8 @@ function ScrollMovement(scrollingTabsControl) {
       }
 
       smv.slideMovableContainerToLeftPos();
+    } else if (stc.scrollingTabsActiveOffset) {
+      stc.handleArrowsClassNames('left');
     }
   };
 
@@ -183,7 +185,7 @@ function ScrollMovement(scrollingTabsControl) {
     stc.movableContainerLeftPos = stc.movableContainerLeftPos / 1;
     leftVal = smv.getMovableContainerCssLeftVal();
 
-    stc.$movableContainer.stop().animate({ left: leftVal }, 'slow', function __slideAnimComplete() {
+    stc.$movableContainer.stop().animate({ left: leftVal }, 'slow', function () {
       var newMinPos = smv.getMinPos();
 
       // if we slid past the min pos--which can happen if you resize the window
@@ -191,6 +193,20 @@ function ScrollMovement(scrollingTabsControl) {
       if (stc.movableContainerLeftPos < newMinPos) {
         smv.decrementMovableContainerLeftPos(newMinPos);
         stc.$movableContainer.stop().animate({ left: smv.getMovableContainerCssLeftVal() }, 'fast');
+      }
+
+      if (stc.scrollingTabsActiveOffset) {
+        var edge;
+        // taking 2px offset error
+        if (stc.movableContainerLeftPos <= 0 && stc.movableContainerLeftPos >= -2) {
+          // left edge
+          edge = 'left';
+        } else if ((stc.movableContainerLeftPos - newMinPos) >= 0 &&
+                   (stc.movableContainerLeftPos - newMinPos) <= 2) {
+          edge = 'right'
+        }
+
+        stc.handleArrowsClassNames(edge);
       }
     });
   };

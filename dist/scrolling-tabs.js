@@ -557,7 +557,7 @@
   
       activeTabLeftPos = $activeTab.offset().left;
       activeTabWidth = $activeTab.outerWidth();
-      activeTabRightPos = activeTabLeftPos + activeTabWidth;
+      activeTabRightPos = activeTabLeftPos + activeTabWidth + parseInt(stc.scrollingTabsActiveOffset || 0, 10);
   
       rightArrowLeftPos = stc.$rightScrollArrow.offset().left;
       leftArrowRightPos = stc.$leftScrollArrow.outerWidth(); // its leftpos is 0
@@ -582,6 +582,8 @@
         }
   
         smv.slideMovableContainerToLeftPos();
+      } else if (stc.scrollingTabsActiveOffset) {
+        stc.handleArrowsClassNames('left');
       }
     };
   
@@ -614,7 +616,7 @@
       stc.movableContainerLeftPos = stc.movableContainerLeftPos / 1;
       leftVal = smv.getMovableContainerCssLeftVal();
   
-      stc.$movableContainer.stop().animate({ left: leftVal }, 'slow', function __slideAnimComplete() {
+      stc.$movableContainer.stop().animate({ left: leftVal }, 'slow', function () {
         var newMinPos = smv.getMinPos();
   
         // if we slid past the min pos--which can happen if you resize the window
@@ -622,6 +624,20 @@
         if (stc.movableContainerLeftPos < newMinPos) {
           smv.decrementMovableContainerLeftPos(newMinPos);
           stc.$movableContainer.stop().animate({ left: smv.getMovableContainerCssLeftVal() }, 'fast');
+        }
+  
+        if (stc.scrollingTabsActiveOffset) {
+          var edge;
+          // taking 2px offset error
+          if (stc.movableContainerLeftPos <= 0 && stc.movableContainerLeftPos >= -2) {
+            // left edge
+            edge = 'left';
+          } else if ((stc.movableContainerLeftPos - newMinPos) >= 0 &&
+                     (stc.movableContainerLeftPos - newMinPos) <= 2) {
+            edge = 'right'
+          }
+  
+          stc.handleArrowsClassNames(edge);
         }
       });
     };
@@ -661,9 +677,11 @@
   /* **********************************************************************
    * ScrollingTabsControl - Class that each directive will instantiate
    * **********************************************************************/
-  function ScrollingTabsControl($tabsContainer, $timeout) {
+  function ScrollingTabsControl($tabsContainer, $timeout, options) {
     var stc = this;
   
+    options = options || {};
+    
     stc.$tabsContainer = $tabsContainer;
     stc.$timeout = $timeout;
   
@@ -674,6 +692,8 @@
     stc.scrollMovement = new ScrollMovement(stc);
     stc.eventHandlers = new EventHandlers(stc);
     stc.elementsHandler = new ElementsHandler(stc);
+  
+    stc.scrollingTabsActiveOffset = options.scrollingTabsActiveOffset || 0;
   }
   
   // prototype methods
@@ -684,11 +704,11 @@
           actionsTaken = stc.elementsHandler.refreshAllElementSizes(true);
   
       if (!actionsTaken.didScrollToActiveTab) {
-        stc.$timeout(function __scrollToActiveAfterRefreshSizes() {
+        stc.$timeout(function () {
           scrollMovement.scrollToActiveTab({
             isOnTabsRefresh: true
           });
-        }, 100);
+        }, stc.scrollingTabsActiveOffset ? 200 : 100);
       }
     };
   
@@ -724,6 +744,28 @@
       elementsHandler.removeTranscludedTabContentOutsideMovableContainer();
     };
   
+    /**
+     * Handles control arrows classnames
+     *
+     * @param {string} edge ('left'|'right')
+     * @return {undefined}
+     */
+    p.handleArrowsClassNames = function (edge) {
+      var stc = this;
+      var edgeClassName = 'scrtabs-tab-scroll-arrow--is-on-edge';
+      var arrows = {
+        left: stc.$leftScrollArrow,
+        right: stc.$rightScrollArrow,
+      };
+  
+      if (edge) {
+        arrows[edge].addClass(edgeClassName);
+        arrows[edge == 'left' ? 'right' : 'left'].removeClass(edgeClassName);
+      } else {
+        arrows['left'].removeClass(edgeClassName);
+        arrows['right'].removeClass(edgeClassName);
+      }
+    }
   
   }(ScrollingTabsControl.prototype));
   
@@ -790,7 +832,8 @@
           // the tabs without adding a watch
           scrollingTabsControl.initTabs({
             isWrapperDirective: false,
-            scrollToTabEdge: scrollToTabEdge
+            scrollToTabEdge: scrollToTabEdge,
+            scrollingTabsActiveOffset: attrs.scrollingTabsActiveOffset
           });
   
           return;
@@ -867,7 +910,7 @@
         transclude: true,
         replace: true,
         link: function(scope, element, attrs) {
-          var scrollingTabsControl = new ScrollingTabsControl(element, $timeout),
+          var scrollingTabsControl = new ScrollingTabsControl(element, $timeout, { scrollingTabsActiveOffset: attrs.scrollingTabsActiveOffset }),
               isWrappingAngularUIBTabset = element.find('uib-tabset').length > 0,
               isWrappingAngularUITabset = isWrappingAngularUIBTabset || element.find('tabset, .scrtabs-tabs-movable-container div > ul.nav').length > 0,
               scrollToTabEdge = attrs.scrollToTabEdge && attrs.scrollToTabEdge.toLowerCase() === 'true',

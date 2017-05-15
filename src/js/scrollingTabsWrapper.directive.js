@@ -9,7 +9,7 @@ function scrollingTabsWrapperDirective($timeout) {
       transclude: true,
       replace: true,
       link: function(scope, element, attrs) {
-        var scrollingTabsControl = new ScrollingTabsControl(element, $timeout),
+        var scrollingTabsControl = new ScrollingTabsControl(element, $timeout, { scrollingTabsActiveOffset: attrs.scrollingTabsActiveOffset }),
             isWrappingAngularUIBTabset = element.find('uib-tabset').length > 0,
             isWrappingAngularUITabset = isWrappingAngularUIBTabset || element.find('tabset, .scrtabs-tabs-movable-container div > ul.nav').length > 0,
             scrollToTabEdge = attrs.scrollToTabEdge && attrs.scrollToTabEdge.toLowerCase() === 'true',

@@ -61,7 +61,8 @@ function scrollingTabsDirective($timeout, $sce) {
         // the tabs without adding a watch
         scrollingTabsControl.initTabs({
           isWrapperDirective: false,
-          scrollToTabEdge: scrollToTabEdge
+          scrollToTabEdge: scrollToTabEdge,
+          scrollingTabsActiveOffset: attrs.scrollingTabsActiveOffset
         });
 
         return;

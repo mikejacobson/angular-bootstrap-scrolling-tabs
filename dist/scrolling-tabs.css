@@ -45,6 +45,10 @@
   .scrtabs-tab-scroll-arrow:hover {
     background-color: #eeeeee; }
 
+.scrtabs-tab-scroll-arrow--is-on-edge {
+  pointer-events: none;
+  opacity: .5; }
+
 .scrtabs-tabs-fixed-container ul.nav-tabs > li {
   white-space: nowrap; }
 
