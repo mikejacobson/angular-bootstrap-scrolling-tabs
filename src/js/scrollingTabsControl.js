@@ -1,9 +1,11 @@
 /* **********************************************************************
  * ScrollingTabsControl - Class that each directive will instantiate
  * **********************************************************************/
-function ScrollingTabsControl($tabsContainer, $timeout) {
+function ScrollingTabsControl($tabsContainer, $timeout, options) {
   var stc = this;
 
+  options = options || {};
+  
   stc.$tabsContainer = $tabsContainer;
   stc.$timeout = $timeout;
 
@@ -14,6 +16,8 @@ function ScrollingTabsControl($tabsContainer, $timeout) {
   stc.scrollMovement = new ScrollMovement(stc);
   stc.eventHandlers = new EventHandlers(stc);
   stc.elementsHandler = new ElementsHandler(stc);
+
+  stc.scrollingTabsActiveOffset = options.scrollingTabsActiveOffset || 0;
 }
 
 // prototype methods
@@ -24,11 +28,11 @@ function ScrollingTabsControl($tabsContainer, $timeout) {
         actionsTaken = stc.elementsHandler.refreshAllElementSizes(true);
 
     if (!actionsTaken.didScrollToActiveTab) {
-      stc.$timeout(function __scrollToActiveAfterRefreshSizes() {
+      stc.$timeout(function () {
         scrollMovement.scrollToActiveTab({
           isOnTabsRefresh: true
         });
-      }, 100);
+      }, stc.scrollingTabsActiveOffset ? 200 : 100);
     }
   };
 
@@ -64,5 +68,27 @@ function ScrollingTabsControl($tabsContainer, $timeout) {
     elementsHandler.removeTranscludedTabContentOutsideMovableContainer();
   };
 
+  /**
+   * Handles control arrows classnames
+   *
+   * @param {string} edge ('left'|'right')
+   * @return {undefined}
+   */
+  p.handleArrowsClassNames = function (edge) {
+    var stc = this;
+    var edgeClassName = 'scrtabs-tab-scroll-arrow--is-on-edge';
+    var arrows = {
+      left: stc.$leftScrollArrow,
+      right: stc.$rightScrollArrow,
+    };
+
+    if (edge) {
+      arrows[edge].addClass(edgeClassName);
+      arrows[edge == 'left' ? 'right' : 'left'].removeClass(edgeClassName);
+    } else {
+      arrows['left'].removeClass(edgeClassName);
+      arrows['right'].removeClass(edgeClassName);
+    }
+  }
 
 }(ScrollingTabsControl.prototype));
