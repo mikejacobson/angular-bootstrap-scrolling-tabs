@@ -634,7 +634,7 @@
             edge = 'left';
           } else if ((stc.movableContainerLeftPos - newMinPos) >= 0 &&
                      (stc.movableContainerLeftPos - newMinPos) <= 2) {
-            edge = 'right'
+            edge = 'right';
           }
   
           stc.handleArrowsClassNames(edge);
@@ -681,7 +681,7 @@
     var stc = this;
   
     options = options || {};
-    
+  
     stc.$tabsContainer = $tabsContainer;
     stc.$timeout = $timeout;
   
@@ -762,10 +762,10 @@
         arrows[edge].addClass(edgeClassName);
         arrows[edge == 'left' ? 'right' : 'left'].removeClass(edgeClassName);
       } else {
-        arrows['left'].removeClass(edgeClassName);
-        arrows['right'].removeClass(edgeClassName);
+        arrows.left.removeClass(edgeClassName);
+        arrows.right.removeClass(edgeClassName);
       }
-    }
+    };
   
   }(ScrollingTabsControl.prototype));
   

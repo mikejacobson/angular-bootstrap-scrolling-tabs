@@ -203,7 +203,7 @@ function ScrollMovement(scrollingTabsControl) {
           edge = 'left';
         } else if ((stc.movableContainerLeftPos - newMinPos) >= 0 &&
                    (stc.movableContainerLeftPos - newMinPos) <= 2) {
-          edge = 'right'
+          edge = 'right';
         }
 
         stc.handleArrowsClassNames(edge);

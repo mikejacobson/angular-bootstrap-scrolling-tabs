@@ -5,7 +5,7 @@ function ScrollingTabsControl($tabsContainer, $timeout, options) {
   var stc = this;
 
   options = options || {};
-  
+
   stc.$tabsContainer = $tabsContainer;
   stc.$timeout = $timeout;
 
@@ -86,9 +86,9 @@ function ScrollingTabsControl($tabsContainer, $timeout, options) {
       arrows[edge].addClass(edgeClassName);
       arrows[edge == 'left' ? 'right' : 'left'].removeClass(edgeClassName);
     } else {
-      arrows['left'].removeClass(edgeClassName);
-      arrows['right'].removeClass(edgeClassName);
+      arrows.left.removeClass(edgeClassName);
+      arrows.right.removeClass(edgeClassName);
     }
-  }
+  };
 
 }(ScrollingTabsControl.prototype));
