@@ -39,6 +39,9 @@ Usage
 3. Include `scrolling-tabs.min.js` (or `scrolling-tabs.js`) on your page (make sure that jQuery and Angular are included before it, and that jQuery is included before Angular)
 4. Add `mj.scrollingTabs` as a module dependency to your app: `angular.module('myapp', ['mj.scrollingTabs']);`
 
+Breaking Change for v1.0.0
+--
+* The directive files, `scrolling-tabs.js` and `scrolling-tabs.css`, have been moved from the project root into `<root>/dist/`.
 
 
 

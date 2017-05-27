@@ -1,79 +1,77 @@
 /**
  * angular-bootstrap-scrolling-tabs
- * @version v0.1.1
+ * @version v1.0.0
  * @link https://github.com/mikejacobson/angular-bootstrap-scrolling-tabs
  * @author Mike Jacobson <michaeljjacobson1@gmail.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
  */
-/* line 13, scrolling-tabs.scss */
+$tabs-height: 42px;
+$border-bootstrap-lt-gray: 1px solid rgb(221, 221, 221);
+$color-bootstrap-blue: rgb(66, 139, 202);
+$background-color-bootstrap-gray-hover: rgb(238, 238, 238);
+
 .scrtabs-tab-container * {
   box-sizing: border-box;
 }
 
-/* line 17, scrolling-tabs.scss */
 .scrtabs-tab-container {
-  height: 42px;
+  height: $tabs-height;
 }
 
-/* line 21, scrolling-tabs.scss */
 .scrtabs-tab-container .tab-content {
   clear: left;
 }
 
-/* line 25, scrolling-tabs.scss */
 .scrtabs-tab-wrapper-container.force-height {
-  height: 42px;
+  height: $tabs-height;
 }
 
-/* line 29, scrolling-tabs.scss */
 .scrtabs-tabs-fixed-container {
   float: left;
-  height: 42px;
+  height: $tabs-height;
   overflow: hidden;
   width: 100%;
 }
 
-/* line 36, scrolling-tabs.scss */
 .scrtabs-tabs-movable-container {
   position: relative;
 }
 
-/* line 40, scrolling-tabs.scss */
 .scrtabs-tabs-movable-container .tab-content {
   display: none;
 }
 
-/* line 44, scrolling-tabs.scss */
 .scrtabs-tab-scroll-arrow {
-  border: 1px solid #dddddd;
+  border: $border-bootstrap-lt-gray;
   border-top: none;
-  color: #428bca;
+  color: $color-bootstrap-blue;
   cursor: pointer;
   display: none;
   float: left;
   font-size: 12px;
-  height: 42px;
+  height: $tabs-height;
   margin-bottom: -1px;
   padding-left: 2px;
   padding-top: 13px;
   width: 20px;
-}
-/* line 57, scrolling-tabs.scss */
-.scrtabs-tab-scroll-arrow:hover {
-  background-color: #eeeeee;
+  &:hover {
+    background-color: $background-color-bootstrap-gray-hover;
+  }
 }
 
-/* line 62, scrolling-tabs.scss */
+.scrtabs-tab-scroll-arrow--is-on-edge {
+  pointer-events: none;
+  opacity: .5;
+}
+
 .scrtabs-tabs-fixed-container ul.nav-tabs > li {
   white-space: nowrap;
 }
 
-/* line 66, scrolling-tabs.scss */
 .scrtabs-tab-content-outside-movable-container {
   clear: left;
 }
 
-/* line 70, scrolling-tabs.scss */
 .scrtabs-tab-content-outside-movable-container .nav-tabs {
   display: none;
 }
