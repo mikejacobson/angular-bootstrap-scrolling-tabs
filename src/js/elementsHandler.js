@@ -179,7 +179,7 @@ function ElementsHandler(scrollingTabsControl) {
         'click.scrtabs': function (e) { evh.handleClickOnRightScrollArrow.call(evh, e); }
       });
 
-      stc.$win.off('.scrtabs').smartresize(function (e) { evh.handleWindowResize.call(evh, e); });
+      stc.$win.smartresize(function (e) { evh.handleWindowResize.call(evh, e); });
     };
 
     p.setFixedContainerWidth = function () {

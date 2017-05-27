@@ -14,14 +14,11 @@
     <div ng-app="myapp">
         <div class="scrolling-tabs-container" ng-controller="MainController as main">
 
-        <div>
-          <input type="text" ng-model="main.tabNum" /><button type="button" ng-click="main.selectTab()">Select Tab #</button>
-        </div>
 
           <!-- **** Use Case #1: Replace Bootstrap nav-tabs tablist <ul> with <scrolling-tabs> element directive **** -->
           <div class="scrolling-tabs-subheader">
             <div>scrolling-tabs</div>
-            <div>Element Directive <em>Replacing</em> nav-tabs tablist (NO hasTabContentOutsideMovableContainer)</div>
+            <div>Element Directive <em>Replacing</em> nav-tabs tablist</div>
           </div>
 
           <!-- Replace ul.nav-tabs with scrolling-tabs element directive -->
@@ -30,8 +27,7 @@
                           prop-title="title"
                           prop-active="active"
                           prop-disabled="disabled"
-                          tab-click="main.handleClickOnTab($event, $index, tab);"
-                          watch-tabs="main.uc1Tabs">
+                          tab-click="main.handleClickOnTab($event, $index, tab);">
           </scrolling-tabs>
 
           <!-- Tab panes -->
@@ -42,42 +38,50 @@
 
 
           <!-- **** Use Case #2: Wrap Bootstrap nav-tabs tablist with scrolling-tabs-wrapper attribute directive **** -->
-          <!-- <div class="scrolling-tabs-subheader">
+          <div class="scrolling-tabs-subheader">
             <div>scrolling-tabs-wrapper</div>
-            <div>Attribute Directive <em>Wrapping</em> nav-tabs tablist (NO hasTabContentOutsideMovableContainer)</div>
-          </div> -->
+            <div>Attribute Directive <em>Wrapping</em> nav-tabs tablist</div>
+          </div>
 
           <!-- wrap nav-tabs ul in a div with scrolling-tabs-wrapper directive on it -->
-          <!-- <div> scrolling-tabs-wrapper -->
-
-
-           <!--<ul class="nav nav-tabs" role="tablist">
+          <div scrolling-tabs-wrapper>
+            <!-- Standard Bootstrap ul.nav-tabs -->
+            <ul class="nav nav-tabs" role="tablist">
               <li ng-class="{ 'active': tab.active, 'disabled': tab.disabled }" ng-repeat="tab in main.uc2Tabs">
                 <a ng-href="{{'#' + tab.paneId}}" role="tab" data-toggle="tab">{{tab.title}}</a>
               </li>
-            </ul>-->
-
-            <!-- Standard Bootstrap ul.nav-pills -->
-           <!-- <ul class="nav nav-pills" role="tablist">
-              <li ng-class="{ 'active': tab.active, 'disabled': tab.disabled }" ng-repeat="tab in main.uc2Tabs">
-                <a ng-href="{{'#' + tab.paneId}}" role="pill" data-toggle="pill">{{tab.title}}</a>
-              </li>
-            </ul> -->
-
+            </ul>
           </div>
-
-          <!-- Standard Bootstrap ul.nav-pills
-         <ul class="nav nav-pills" role="tablist">
-            <li ng-class="{ 'active': tab.active, 'disabled': tab.disabled }" ng-repeat="tab in main.uc2Tabs">
-              <a ng-href="{{'#' + tab.paneId}}" role="pill" data-toggle="pill">{{tab.title}}</a>
-            </li>
-          </ul>-->
 
           <!-- Tab panes -->
           <div class="tab-content">
             <div id="{{tab.paneId}}" class="tab-pane" ng-class="{ 'active': tab.active }" ng-repeat="tab in main.uc2Tabs">{{tab.content}}</div>
           </div>
 
+
+
+          <!-- **** Use Case #2a: Wrap Bootstrap nav-pills with scrolling-tabs-wrapper attribute directive **** -->
+          <div class="scrolling-tabs-subheader">
+            <div>scrolling-tabs-wrapper</div>
+            <div>Attribute Directive <em>Wrapping</em> nav-pills</div>
+          </div>
+
+          <!-- wrap nav-pills ul in a div with scrolling-tabs-wrapper directive on it -->
+          <div scrolling-tabs-wrapper>
+
+            <!-- Standard Bootstrap ul.nav-pills -->
+            <ul class="nav nav-pills" role="tablist">
+              <li ng-class="{ 'active': tab.active, 'disabled': tab.disabled }" ng-repeat="tab in main.uc3Pills">
+                <a ng-href="{{'#' + tab.paneId}}" role="pill" data-toggle="pill">{{tab.title}}</a>
+              </li>
+            </ul>
+
+          </div>
+
+          <!-- Tab panes -->
+          <div class="tab-content">
+            <div id="{{tab.paneId}}" class="tab-pane" ng-class="{ 'active': tab.active }" ng-repeat="tab in main.uc3Pills">{{tab.content}}</div>
+          </div>
 
         </div>
 

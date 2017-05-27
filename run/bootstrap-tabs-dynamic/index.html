@@ -18,27 +18,18 @@
           <!-- **** Use Case #1: Replace Bootstrap nav-tabs tablist <ul> with <scrolling-tabs> element directive **** -->
           <div class="scrolling-tabs-subheader">
             <div>scrolling-tabs</div>
-            <div>Element Directive <em>Replacing</em> nav-tabs tablist
-              <button type="button" ng-click="main.addUc1Tab()">Add Tab</button>
-              <button type="button" ng-click="main.rmvUc1Tab()">Remove Tab</button>
-              <button type="button" ng-click="main.toggleNarrow()">Toggle Narrow</button>
-              <input type="text" ng-model="main.tabNum" style="width: 40px" /><button type="button" ng-click="main.selectTab()">Select Tab #</button>
-            </div>
+            <div>Element Directive <em>Replacing</em> nav-tabs tablist <button type="button" ng-click="main.addUc1Tab()">Add Tab</button></div>
           </div>
 
-          <div style="width: {{ main.narrow ? '50%' : '100%' }}">
-            <!-- Replace ul.nav-tabs with scrolling-tabs element directive -->
-            <scrolling-tabs tabs="main.uc1Tabs"
-                            watch-tabs="main.uc1Tabs"
-                            refresh-on="main.refresh"
-                            scroll-to-tab-edge="true"
-                            prop-pane-id="paneId"
-                            prop-title="title"
-                            prop-active="active"
-                            prop-disabled="disabled"
-                            tab-click="main.handleClickOnTab($event, $index, tab);">
-            </scrolling-tabs>
-          </div>
+          <!-- Replace ul.nav-tabs with scrolling-tabs element directive -->
+          <scrolling-tabs tabs="{{main.uc1Tabs}}"
+                          watch-tabs="main.uc1Tabs"
+                          prop-pane-id="paneId"
+                          prop-title="title"
+                          prop-active="active"
+                          prop-disabled="disabled"
+                          tab-click="main.handleClickOnTab($event, $index, tab);">
+          </scrolling-tabs>
 
           <!-- Tab panes -->
           <div class="tab-content">
@@ -50,20 +41,11 @@
           <!-- **** Use Case #2: Wrap Bootstrap nav-tabs tablist with scrolling-tabs-wrapper attribute directive **** -->
           <div class="scrolling-tabs-subheader">
             <div>scrolling-tabs-wrapper</div>
-            <div>Attribute Directive <em>Wrapping</em> nav-tabs tablist
-              <button type="button" ng-click="main.addUc2Tab()">Add Tab</button>
-              <button type="button" ng-click="main.rmvUc2Tab()">Remove Tab</button>
-              <button type="button" ng-click="main.toggleNarrow2()">Toggle Narrow</button>
-              <input type="text" ng-model="main.tabNum2" style="width: 40px" /><button type="button" ng-click="main.selectTab2()">Select Tab #</button>
-            </div>
+            <div>Attribute Directive <em>Wrapping</em> nav-tabs tablist <button type="button" ng-click="main.addUc2Tab()">Add Tab</button></div>
           </div>
 
           <!-- wrap nav-tabs ul in a div with scrolling-tabs-wrapper directive on it -->
-          <div scrolling-tabs-wrapper
-               style="width: {{ main.narrow ? '50%' : '100%' }}"
-               watch-tabs="main.uc2Tabs"
-               refresh-on="main.refresh2"
-               scroll-to-tab-edge="true">
+          <div scrolling-tabs-wrapper watch-tabs="main.uc2Tabs">
             <!-- Standard Bootstrap ul.nav-tabs -->
             <ul class="nav nav-tabs" role="tablist">
               <li ng-class="{ 'active': tab.active, 'disabled': tab.disabled }" ng-repeat="tab in main.uc2Tabs">
