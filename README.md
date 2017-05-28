@@ -29,6 +29,7 @@ There are also some optional features available:
 * [Support Adding Tabs Dynamically After Page Load](#ft1)
 * [Force Scroll to Tab Edge](#ft2)
 * [Force Refresh of Tab Container](#refreshOn)
+* [Enable Horizontal Swiping for Touch Screens](#allowScrollbar)
 
 
 
@@ -255,6 +256,34 @@ function forceARefresh() {
   main.triggerRefresh++;
 }
 
+```
+
+#### <a id="allowScrollbar"></a>Enable Horizontal Swiping for Touch Screens
+
+To enable horizontal swiping for touch screens, you need to enable horizontal scrolling&mdash;and therefore the horizontal scrollbar&mdash;for the tabs. For WebKit-based browsers, the scrollbar can then be hidden via CSS, but for browsers that don't support `::-webkit-scrollbar` (see [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-scrollbar) for details), the scrollbar will be visible (which is what this directive was originally built to prevent).
+
+So if you only need to support WebKit-based browsers, here's how to enable swiping:
+
+Add CSS class `scrtabs-allow-scrollbar` to the directive element or any ancestor of the directive element. As long as the tabs fixed container (`.scrtabs-tabs-fixed-container`) is a descendent of that class, it will work.
+
+For example:
+```html
+<!-- Replace ul.nav-tabs with scrolling-tabs element directive -->
+<scrolling-tabs tabs="{{main.uc1Tabs}}"
+                class="scrtabs-allow-scrollbar"
+                tab-click="main.handleClickOnTab($event, $index, tab);">
+</scrolling-tabs>
+
+
+<!-- wrap nav-tabs ul in a div with scrolling-tabs-wrapper directive on it -->
+<div scrolling-tabs-wrapper class="scrtabs-allow-scrollbar">
+  <!-- Standard Bootstrap ul.nav-tabs -->
+  <ul class="nav nav-tabs" role="tablist">
+    <li ng-class="{ 'active': tab.active, 'disabled': tab.disabled }" ng-repeat="tab in main.uc2Tabs">
+      <a ng-href="{{'#' + tab.paneId}}" role="tab" data-toggle="tab">{{tab.title}}</a>
+    </li>
+  </ul>
+</div>
 ```
 
 

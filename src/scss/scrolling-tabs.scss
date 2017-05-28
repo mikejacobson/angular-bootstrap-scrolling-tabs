@@ -1,10 +1,3 @@
-/**
- * angular-bootstrap-scrolling-tabs
- * @version v1.0.0
- * @link https://github.com/mikejacobson/angular-bootstrap-scrolling-tabs
- * @author Mike Jacobson <michaeljjacobson1@gmail.com>
- * @license MIT License, http://www.opensource.org/licenses/MIT
- */
 $tabs-height: 42px;
 $border-bootstrap-lt-gray: 1px solid rgb(221, 221, 221);
 $color-bootstrap-blue: rgb(66, 139, 202);
@@ -31,6 +24,14 @@ $background-color-bootstrap-gray-hover: rgb(238, 238, 238);
   height: $tabs-height;
   overflow: hidden;
   width: 100%;
+}
+
+.scrtabs-allow-scrollbar .scrtabs-tabs-fixed-container {
+  overflow-x: auto;
+
+  &::-webkit-scrollbar {
+    display:none;
+  }
 }
 
 .scrtabs-tabs-movable-container {

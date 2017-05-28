@@ -1,4 +1,3 @@
-//=include header.js
 ;(function ($, window) {
   'use strict';
 

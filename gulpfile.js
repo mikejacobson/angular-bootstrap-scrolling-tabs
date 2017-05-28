@@ -2,12 +2,14 @@ var gulp = require('gulp');
 
 var browserSync = require('browser-sync');
 var cleancss = require('gulp-clean-css');
-var shell = require('gulp-shell');
+var fs = require('fs');
+var header = require('gulp-header');
 var include = require('gulp-include');
 var jshint = require('gulp-jshint');
 var rename = require('gulp-rename');
 var runSequence = require('run-sequence');
 var sass = require('gulp-sass');
+var shell = require('gulp-shell');
 var uglify = require('gulp-uglify');
 
 gulp.task('browser-sync', function () {
@@ -30,6 +32,12 @@ gulp.task('browser-sync:nobrowser', function () {
     open: false,
     port: 3000
   });
+});
+
+gulp.task('addHeader', function () {
+  return gulp.src('dist/*.*')
+    .pipe(header(fs.readFileSync('src/js/header.js', 'utf8')))
+    .pipe(gulp.dest('dist'));
 });
 
 gulp.task('bundlejs', function () {
@@ -89,6 +97,7 @@ gulp.task('build', function (cb) {
               'minjs',
               'sass',
               'mincss',
+              'addHeader',
               cb);
 });
 
