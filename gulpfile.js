@@ -12,6 +12,8 @@ var sass = require('gulp-sass');
 var shell = require('gulp-shell');
 var uglify = require('gulp-uglify');
 
+var headerFilePath = 'src/js/header.js';
+
 gulp.task('browser-sync', function () {
   return browserSync.init({
     startPath: 'run',
@@ -34,16 +36,11 @@ gulp.task('browser-sync:nobrowser', function () {
   });
 });
 
-gulp.task('addHeader', function () {
-  return gulp.src('dist/*.*')
-    .pipe(header(fs.readFileSync('src/js/header.js', 'utf8')))
-    .pipe(gulp.dest('dist'));
-});
-
 gulp.task('bundlejs', function () {
   return gulp.src('src/js/_main.js')
     .pipe(include())
       .on('error', console.log)
+    .pipe(header(fs.readFileSync(headerFilePath, 'utf8')))
     .pipe(rename('scrolling-tabs.js'))
     .pipe(gulp.dest('dist'));
 });
@@ -64,6 +61,7 @@ gulp.task('mincss', function () {
   return gulp.src('dist/scrolling-tabs.css')
     .pipe(rename('scrolling-tabs.min.css'))
     .pipe(cleancss())
+    .pipe(header(fs.readFileSync(headerFilePath, 'utf8')))
     .pipe(gulp.dest('dist'));
 });
 
@@ -71,12 +69,14 @@ gulp.task('minjs', function () {
   return gulp.src('dist/scrolling-tabs.js')
     .pipe(rename('scrolling-tabs.min.js'))
     .pipe(uglify())
+    .pipe(header(fs.readFileSync(headerFilePath, 'utf8')))
     .pipe(gulp.dest('dist'));
 });
 
 gulp.task('sass', function () {
   return gulp.src('src/scss/*.scss')
     .pipe(sass().on('error', sass.logError))
+    .pipe(header(fs.readFileSync(headerFilePath, 'utf8')))
     .pipe(gulp.dest('dist'));
 });
 
@@ -97,7 +97,6 @@ gulp.task('build', function (cb) {
               'minjs',
               'sass',
               'mincss',
-              'addHeader',
               cb);
 });
 
