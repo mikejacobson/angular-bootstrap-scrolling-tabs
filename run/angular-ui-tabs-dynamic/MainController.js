@@ -12,6 +12,15 @@
 
     ctrl.handleClickOnTab = function (e, idx, tab) {
     };
+
+    ctrl.testStrings = [];
+    var testStringCount = 0;
+
+    ctrl.clickInside = function() {
+      console.log("click!!");
+      ctrl.testStrings.push('click ' + testStringCount++);
+      ctrl.testCount = testStringCount;
+    }
   }
 
   MainController.$inject = ['MainService'];

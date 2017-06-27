@@ -28,7 +28,6 @@ function scrollingTabsWrapperDirective($timeout) {
         }
 
         if (!isWrappingAngularUITabset) {
-          scrollingTabsControl.removeTranscludedTabContentOutsideMovableContainer();
           scrtc.hasTabContentOutsideMovableContainer = false;
         }
 
@@ -62,7 +61,6 @@ function scrollingTabsWrapperDirective($timeout) {
             (attrs.watchTabs && attrs.watchTabs.toLowerCase() === 'true')) {
 
           if (isWrappingAngularUITabset) {
-            scrollingTabsControl.removeTranscludedTabContentOutsideMovableContainer();
             scrtc.hasTabContentOutsideMovableContainer = false;
           }
 

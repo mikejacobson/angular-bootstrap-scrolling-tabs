@@ -56,16 +56,7 @@ function ScrollingTabsControl($tabsContainer, $timeout, options) {
           isOnTabsRefresh: options.isWatchingTabs
         });
       }
-
-
     }, 100);
-  };
-
-  p.removeTranscludedTabContentOutsideMovableContainer = function() {
-    var stc = this,
-        elementsHandler = stc.elementsHandler;
-
-    elementsHandler.removeTranscludedTabContentOutsideMovableContainer();
   };
 
   /**

@@ -23,6 +23,9 @@
             <uib-tabset>
               <uib-tab ng-repeat="tab in main.tabs" heading="{{tab.title}}" active="tab.active" disabled="tab.disabled">
                 {{tab.content}}
+                <button ng-click="main.clickInside()">Click Me!</button>
+                <div>testCount: <span ng-bind="main.testCount"></span></div>
+                <div ng-repeat="testString in main.testStrings" ng-bind="testString"></div>
               </uib-tab>
             </uib-tabset>
           </div>

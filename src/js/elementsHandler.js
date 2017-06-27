@@ -27,41 +27,15 @@ function ElementsHandler(scrollingTabsControl) {
       var ehd = this,
           stc = ehd.stc,
           $tabsContainer = stc.$tabsContainer,
-          tabContentCloneCssClass = 'scrtabs-tab-content-clone',
-          $tabContentInMovableContainer = $tabsContainer.find('.scrtabs-tabs-movable-container .tab-content'),
-          $currTcClone,
-          $newTcClone;
+          $movableContainer = $tabsContainer.find('.scrtabs-tabs-movable-container'),
+          $tabContentInMovableContainer = $movableContainer.find('.tab-content'),
+          uibTabsetController = $movableContainer.find('> div').eq(0).data('$uibTabsetController');
 
-      // if the tabs won't be changing, we can just move the
-      // the .tab-content outside the scrolling container right now
-      if (!options.isWatchingTabs) {
-        $tabContentInMovableContainer.show().appendTo($tabsContainer);
-        return;
+      $tabContentInMovableContainer.show().appendTo($tabsContainer);
+
+      if (uibTabsetController) {
+        $tabContentInMovableContainer.data('$uibTabsetController', uibTabsetController);
       }
-
-      /* if we're watching the tabs for changes, we can't just
-       * move the .tab-content outside the scrolling container because
-       * that will break the angular-ui directive dependencies, and
-       * an error will be thrown as soon as the tabs change;
-       * so we leave the .tab-content where it is but hide it, then
-       * make a clone and move the clone outside the scroll container,
-       * which will be the visible .tab-content.
-       */
-
-      // create new clone
-      $newTcClone = $tabContentInMovableContainer
-                      .clone()
-                      .addClass(tabContentCloneCssClass);
-
-      // get the current clone, if it exists
-      $currTcClone = $tabsContainer.find('.' + tabContentCloneCssClass);
-
-      if ($currTcClone.length) { // already a clone there so replace it
-        $currTcClone.replaceWith($newTcClone);
-      } else {
-        $tabsContainer.append($newTcClone);
-      }
-
     };
 
     p.refreshAllElementSizes = function () {
@@ -107,14 +81,6 @@ function ElementsHandler(scrollingTabsControl) {
       }
 
       return actionsTaken;
-    };
-
-    p.removeTranscludedTabContentOutsideMovableContainer = function () {
-      var ehd = this,
-          stc = ehd.stc,
-          $tabsContainer = stc.$tabsContainer;
-
-      $tabsContainer.find('.scrtabs-tab-content-outside-movable-container').remove();
     };
 
     p.setElementReferences = function () {

@@ -81,8 +81,8 @@ gulp.task('sass', function () {
 });
 
 gulp.task('watch:src', function () {
-  gulp.watch('src/scss/*.scss', ['sass']);
-  gulp.watch('src/js/*.js', ['minjs']);
+  gulp.watch('src/scss/*.scss', ['build']);
+  gulp.watch('src/js/*.js', ['build']);
 });
 
 gulp.task('watch:dist', function () {
@@ -125,6 +125,5 @@ gulp.task('e2e', function () {
 
 gulp.task('default', function () {
   runSequence('serve',
-              'watch:src',
-              'watch:dist');
+              'watch:src');
 });
