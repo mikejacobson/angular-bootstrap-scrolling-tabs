@@ -1,7 +1,7 @@
 angular-bootstrap-scrolling-tabs
 ================================
 
-Angular directives for making Bootstrap 3 Tabs or AngularUI Bootstrap Tabs scroll horizontally rather than wrap. (Note that jQuery is required, not just JQLite.)
+AngularJS directives for making Bootstrap 3 Tabs or AngularUI Bootstrap Tabs scroll horizontally rather than wrap. (Note that jQuery is required, not just JQLite.)
 
 Here's what they look like:
 
@@ -54,9 +54,9 @@ It adjusts itself on window resize (debounced to prevent resize event wackiness)
 
 There are two directives to choose from, depending on your application:
 
-`scrolling-tabs` is an element directive that *replaces* your standard Bootstrap `ul.nav-tabs` element.
+`scrolling-tabs` is a component directive that *replaces* your standard Bootstrap `ul.nav-tabs` element.
 
-`scrolling-tabs-wrapper` is an attribute directive that *wraps* either a standard Bootstrap `ul.nav-tabs` element or an AngularUI Bootstrap `tabset` element.
+`scrolling-tabs-wrapper` is a behavioral directive that *wraps* either a standard Bootstrap `ul.nav-tabs` element or an AngularUI Bootstrap `tabset` element.
 
 Note: Similar to [Bootstrap tabs](http://getbootstrap.com/javascript/#tabs), nested tabs are not supported.
 
